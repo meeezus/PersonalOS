@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PersonalOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0A0A0A;
+            --bg-hover: #0F0F0F;
+            --text-primary: #E5E5E5;
+            --text-highlight: #F5F5F5;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-bright: rgba(255, 255, 255, 0.2);
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .app-header {
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            -webkit-app-region: drag;
+        }
+
+        .app-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .app-subtitle {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.5;
+        }
+
+        /* Main content area - split view */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Dashboard sidebar */
+        .dashboard-sidebar {
+            width: 350px;
+            border-right: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .stealth-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stealth-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-bright);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-highlight);
+            margin-bottom: 0.75rem;
+        }
+
+        .priority-text {
+            font-size: 1.125rem;
+            line-height: 1.4;
+            color: var(--text-highlight);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 1rem;
+            opacity: 0.5;
+            font-size: 0.875rem;
+        }
+
+        /* OpenCode chat area */
+        .chat-area {
+            flex: 1;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .opencode-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-bright);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div>
+                <h1 class="app-title">PERSONALOS</h1>
+                <p class="app-subtitle" id="current-date">Command Center</p>
+            </div>
+        </header>
+
+        <!-- Main content: Dashboard + OpenCode -->
+        <div class="main-content">
+            <!-- Dashboard Sidebar -->
+            <div class="dashboard-sidebar">
+                <!-- Today's Priority -->
+                <div class="stealth-card">
+                    <h2 class="card-title">Today's Priority</h2>
+                    <p class="priority-text" id="priority-text">Loading...</p>
+                </div>
+
+                <!-- Dynamic dashboard content -->
+                <div id="dynamic-content" class="loading">
+                    Dashboard loading...
+                </div>
+            </div>
+
+            <!-- OpenCode Chat Area -->
+            <div class="chat-area">
+                <iframe
+                    id="opencode-frame"
+                    class="opencode-iframe"
+                    src="http://localhost:3001"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const response = await fetch('http://localhost:3002/api/dashboard');
+                const data = await response.json();
+
+                document.getElementById('priority-text').textContent = data.priority || 'No priority set';
+
+                // Build dashboard content
+                let html = '';
+
+                // Week 1 Progress
+                if (data.week1) {
+                    html += `
+                        <div class="stealth-card">
+                            <h2 class="card-title">Week 1 Progress</h2>
+                            <p class="priority-text">${data.week1.completed}/${data.week1.total} emails</p>
+                            <p style="font-size: 0.875rem; opacity: 0.7; margin-top: 0.5rem;">${data.week1.percentage}% complete</p>
+                        </div>
+                    `;
+                }
+
+                document.getElementById('dynamic-content').innerHTML = html || '<p class="loading">Dashboard data loaded!</p>';
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+                document.getElementById('priority-text').textContent = 'Error loading priority';
+                document.getElementById('dynamic-content').innerHTML = '<p class="loading" style="color: var(--accent-red);">Dashboard server not running</p>';
+            }
+        }
+
+        // Load on start
+        loadDashboard();
+
+        // Refresh every 5 minutes
+        setInterval(loadDashboard, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

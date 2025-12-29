@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Specialist // STEALTH</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        stealth: {
+                            900: '#050505', // Background
+                            800: '#0A0A0A', // Card Bg
+                            700: '#141414', // Card Hover
+                            600: '#262626', // Borders
+                            100: '#E5E5E5', // Primary Text
+                            50: '#F5F5F5',  // Highlights
+                        }
+                    },
+                    backgroundImage: {
+                        'mist-gradient': 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)',
+                        'spotlight': 'radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.04), transparent 40%)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #E5E5E5;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Stealth Card - Single Source of Truth for Borders */
+        .stealth-card {
+            background-color: #0A0A0A;
+            /* Consistent 10% opacity border for all base cards */
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 2px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .stealth-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background-color: #0F0F0F;
+            transform: translateY(-1px);
+        }
+
+        /* Mouse Spotlight Effect */
+        .stealth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.03), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .stealth-card:hover::before {
+            opacity: 1;
+        }
+        
+        /* Content z-index fix for spotlight */
+        .stealth-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Custom Checkbox */
+        .stealth-checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1px solid #404040;
+            background-color: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .stealth-checkbox:checked {
+            background-color: #E5E5E5;
+            border-color: #E5E5E5;
+        }
+        .stealth-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 6px;
+            width: 4px; height: 10px;
+            border: solid #050505;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Subtle Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Progress Bar Transition */
+        .progress-bar {
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        /* Input Reset */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = window.React;
+
+        // Icons
+        const Icons = {
+            ChevronRight: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>,
+            ChevronLeft: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path></svg>,
+            Barbell: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M248,104a24,24,0,0,0-24-24H200V56a8,8,0,0,0-8-8H64a8,8,0,0,0-8-8V80H32A24,24,0,0,0,8,104v48a24,24,0,0,0,24,24H56v24a8,8,0,0,0,8,8H192a8,8,0,0,0,8-8V176h24a24,24,0,0,0,24-24Zm-16,48H208a8,8,0,0,0-8,8v16H184V160a8,8,0,0,0-8-8H80a8,8,0,0,0-8,8v16H56V160a8,8,0,0,0-8-8H24V104H48a8,8,0,0,0,8-8V80H72v16a8,8,0,0,0,8,8h96a8,8,0,0,0,8-8V80h16V96a8,8,0,0,0,8,8h24Z"></path></svg>,
+            ShieldCheck: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M208,40H48A16,16,0,0,0,32,56v58.77c0,89.61,75.82,119.34,91,124.39a15.53,15.53,0,0,0,10,0c15.2-5.05,91-34.78,91-124.39V56A16,16,0,0,0,208,40Zm-59.39,94.27-32,32a8,8,0,0,1-11.32,0l-16-16a8,8,0,0,1,11.32-11.32L112,150l26.34-26.35a8,8,0,0,1,11.32,11.32Z"></path></svg>,
+            Activity: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M232,120h-49.4l-24.88,74.64A8,8,0,0,1,150.13,200h0a8,8,0,0,1-7.58-5.32L99.27,62.88,62.62,120H24a8,8,0,0,1,0-16H68.6a8,8,0,0,1,6.73,3.69L114.73,169l41.22-123.67A8,8,0,0,1,163.53,40h0a8,8,0,0,1,7.59,5.47L194.27,120H232a8,8,0,0,1,0,16Z"></path></svg>,
+            Fire: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M148.75,79a72.15,72.15,0,0,0-35.34-26.16,8,8,0,0,0-9.85,10.6,80.11,80.11,0,0,1,9.66,41.22A72.08,72.08,0,0,1,72,176a8,8,0,0,0,0,16,72,72,0,0,0,72-72A79.54,79.54,0,0,1,148.75,79Z"></path><path fill="currentColor" d="M176,32a8,8,0,0,0-7.31,4.71,96.33,96.33,0,0,1-9.92,16.59C149.2,65.4,136.23,72,120,72,79.22,72,48,110.15,48,152a80,80,0,0,0,136.56,56.57c13.78-13.78,21.94-33.37,23.16-56.12.79-14.66,5-28.79,11.57-40.66A8,8,0,0,0,212,96c-18.17,0-36.22-9.67-47.53-25.27a136.21,136.21,0,0,0-12.76-15.42A8,8,0,0,0,176,32Zm-4.68,165.25A64,64,0,0,1,64,152c0-30.29,20.59-57.29,51.64-62.62,1.35,13.11,5.32,25.61,11.39,36.4,12.59,22.37,36.27,33.45,61.76,28.8C187.31,169.17,181.79,183.82,171.32,197.25Z"></path></svg>,
+            X: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>,
+            Lightning: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7L42.15,110.68a8,8,0,0,0,5,13.66l57.61,21.6-14.66,73.33a8,8,0,0,0,13.69,7l112-100.15A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71,150.2,40.15l-10.47,52.38a8,8,0,0,0,5,9.06l52.8,20.1Z"></path></svg>,
+            Check: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M229.66,53.66a8,8,0,0,0-11.32,0l-136,136L37.66,145.66a8,8,0,0,0-11.32,11.32l48,48a8,8,0,0,0,11.32,0l144-144A8,8,0,0,0,229.66,53.66Z"></path></svg>,
+            Auto: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M197.66,194.34a8,8,0,0,1-11.32,11.32L128,147.31,70.66,204.66a8,8,0,0,1-11.32-11.32L116.69,136,58.34,77.66a8,8,0,0,1,11.32-11.32L128,124.69l57.34-57.35a8,8,0,0,1,11.32,11.32L139.31,136Z"></path><path fill="currentColor" d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM168,128a40,40,0,1,1-40-40A40,40,0,0,1,168,128Zm-16,0a24,24,0,1,0-24,24A24,24,0,0,0,152,128Z"></path></svg>,
+            Settings: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"></path></svg>,
+            Gear: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M228.32,132.89l-26.6-8.91a82.26,82.26,0,0,0-4.66-11.23l12.72-24.89a12,12,0,0,0-2.3-14.77l-18.43-18.43a12,12,0,0,0-14.77-2.3l-24.89,12.72a82.26,82.26,0,0,0-11.23-4.66L129.11,18.05a12,12,0,0,0-22.22,0l-8.91,26.6a82.26,82.26,0,0,0-11.23,4.66L61.86,36.59a12,12,0,0,0-14.77,2.3L28.66,57.32a12,12,0,0,0-2.3,14.77l12.72,24.89a82.26,82.26,0,0,0-4.66,11.23L7.79,117.11a12,12,0,0,0,0,22.22l26.6,8.91a82.26,82.26,0,0,0,4.66,11.23L26.36,184.36a12,12,0,0,0,2.3,14.77l18.43,18.43a12,12,0,0,0,14.77,2.3l24.89-12.72a82.26,82.26,0,0,0,11.23,4.66l8.91,26.6a12,12,0,0,0,22.22,0l8.91-26.6a82.26,82.26,0,0,0,11.23-4.66l24.89,12.72a12,12,0,0,0,14.77-2.3l18.43-18.43a12,12,0,0,0,2.3-14.77l-12.72-24.89a82.26,82.26,0,0,0,4.66-11.23l26.6-8.91a12,12,0,0,0,0-22.22ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"></path></svg>,
+            Journal: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M200,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H56V48H200V208ZM88,152h80a8,8,0,0,1,0,16H88a8,8,0,0,1,0-16Zm0-40h80a8,8,0,0,1,0,16H88a8,8,0,0,1,0-16Zm0-40h80a8,8,0,0,1,0,16H88a8,8,0,0,1,0-16Z"></path></svg>,
+            Target: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm0-160a72,72,0,1,0,72,72A72.08,72.08,0,0,0,128,56Zm0,128a56,56,0,1,1,56-56A56.06,56.06,0,0,1,128,184Zm0-96a40,40,0,1,0,40,40A40,40,0,0,0,128,88Z"></path></svg>,
+            Video: (props) => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 256 256" {...props}><path fill="currentColor" d="M234.33,69.52a24,24,0,0,0-14.49-16.4C185.56,39.88,128,40,128,40s-57.56-.12-91.84,13.12a24,24,0,0,0-14.49,16.4C19.08,79.5,16,97.74,16,128s3.08,48.5,5.67,58.48a24,24,0,0,0,14.49,16.41C69,215.56,128,216,128,216s57.56-.44,91.84-13.11a24,24,0,0,0,14.49-16.41C236.92,176.5,240,158.26,240,128S236.92,79.5,234.33,69.52Zm-121.28,87V99.48l36.52,28.52Z"></path></svg>
+        };
+
+        const SixBladesLogo = ({ className = "w-8 h-8" }) => (
+            <svg viewBox="0 0 100 100" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 0 L65 35 L100 50 L65 65 L50 100 L35 65 L0 50 L35 35 Z" fill="#E5E5E5"/>
+                <circle cx="50" cy="50" r="15" fill="#050505"/>
+                <path d="M50 35 L55 45 L65 50 L55 55 L50 65 L45 55 L35 50 L45 45 Z" fill="#E5E5E5"/>
+            </svg>
+        );
+
+        // --- Data ---
+        const SIX_BLADE_WEEKS = [
+            { id: 'A', label: 'Week A', focus: 'Takedowns' },
+            { id: 'B', label: 'Week B', focus: 'Side Control / Mount' },
+            { id: 'C', label: 'Week C', focus: 'Side Control / Mount' },
+            { id: 'D', label: 'Week D', focus: 'Guard' },
+            { id: 'E', label: 'Week E', focus: 'Half Guard' },
+            { id: 'F', label: 'Week F', focus: 'Guard Passing' },
+            { id: 'G', label: 'Week G', focus: 'Classic Guard' },
+            { id: 'H', label: 'Week H', focus: 'Submissions' },
+            { id: 'I', label: 'Week I', focus: 'Side Control / Mount' },
+            { id: 'J', label: 'Week J', focus: 'Back Position' },
+            { id: 'K', label: 'Week K', focus: 'Guard Passing' },
+            { id: 'L', label: 'Week L', focus: 'Guard' },
+        ];
+
+        // --- EXERCISE DATA (Reorganized by Block 1, 2, 3) ---
+        const SESSIONS = {
+          // --- BLOCK 1 ---
+          1: {
+            1: {
+                title: "Block 1: Anabolic I",
+                focus: "Strength & Power",
+                duration: "60m",
+                warmup: ["Jump Rope Flow (3-5 min)", "90/90 Hip Transitions (1x4/side)", "Kettlebell Arm Bar (1x8/side)", "Deep Tier Squat Jumps (1x20)"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "a_zercher", name: "Zercher Box Squat", sets: "3", reps: "4-6", intensity: "80-85%", notes: "Explosive intent" },
+                        { id: "a_boxjump", name: "Standing Box Jump", sets: "3", reps: "5", intensity: "BW", notes: "Max height" },
+                        { id: "a_pogo", name: "Double Leg Forward POGOs", sets: "3", reps: "15", intensity: "BW", notes: "10 each direction" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "a_chinup", name: "Strict Chin Up", sets: "3", reps: "6-9", notes: "Add weight if easy" },
+                        { id: "a_slrdl", name: "Single Leg Posted RDL", sets: "3", reps: "12", notes: "Control the hinge" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "a_latlunge", name: "Lateral Lunge to Plate Press", sets: "2", reps: "8", notes: "Both sides" },
+                        { id: "a_dbrot", name: "DB Int/Ext Rotations", sets: "2", reps: "15-20", notes: "Rotator health" },
+                        { id: "a_wrist", name: "Wrist Turnovers", sets: "2", reps: "10", notes: "Forearm pump" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "a_farmers", name: "Farmers Carry", sets: "1", reps: "20m", notes: "Heavy" },
+                        { id: "a_kbrack", name: "KB Rack Carry", sets: "1", reps: "20m", notes: "Core braced" },
+                        { id: "a_waiters", name: "Waiters Carry", sets: "1", reps: "20m", notes: "Overhead stability" }
+                    ]}
+                ]
+            },
+            2: {
+                title: "Block 1: Anabolic II",
+                focus: "Force & Hypertrophy",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "90/90 Hip Transitions", "Kettlebell Arm Bar", "Deep Tier Squat Jumps"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "a_incrow", name: "Incline DB Row", sets: "3", reps: "8", intensity: "Heavy", notes: "Chest supported" },
+                        { id: "a_plyopush", name: "Bench Plyometric Push Up", sets: "3", reps: "20", intensity: "BW", notes: "Explosive" },
+                        { id: "a_ballsq", name: "Med Ball Squeeze Isometric", sets: "3", reps: "30s", notes: "Max effort squeeze" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "a_floorpress", name: "Barbell Floor Press", sets: "3", reps: "6-9", notes: "Dead stop at bottom" },
+                        { id: "a_facepull", name: "Seated Facepull", sets: "3", reps: "12", notes: "Retract scapula" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "a_sideplank", name: "Side Plank Bench Pump", sets: "2", reps: "8", notes: "Per side" },
+                        { id: "a_calf", name: "Seated Calf Raises", sets: "2", reps: "15", notes: "Full ROM" },
+                        { id: "a_tibial", name: "Kettlebell Tibial Raises", sets: "2", reps: "10", notes: "Shin health" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "a_sledpush", name: "Sled Push", sets: "1", reps: "20m", notes: "Max effort" },
+                        { id: "a_sleddrag", name: "Sled Drag", sets: "1", reps: "20m", notes: "Lean back" },
+                        { id: "a_latsled", name: "Lateral Sled Drag", sets: "1", reps: "20m", notes: "Each side" }
+                    ]}
+                ]
+            },
+            3: {
+                title: "Block 1: Anabolic III",
+                focus: "Hypertrophy & Durability",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "90/90 Hip Transitions", "Kettlebell Arm Bar", "Deep Tier Squat Jumps"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "a_dbrdl", name: "Dumbbell RDL", sets: "3", reps: "6-9", intensity: "70-80%", notes: "Hamstring tension" },
+                        { id: "a_kbswing", name: "Banded Kettlebell Swings", sets: "3", reps: "8", intensity: "20-30% BW", notes: "Explosive hip snap" },
+                        { id: "a_latjump", name: "Double Leg Lateral Jumps", sets: "3", reps: "10", notes: "Stick the landing" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "a_bulgarian", name: "Bulgarian Split Squat", sets: "3", reps: "8", notes: "Both sides" },
+                        { id: "a_1armbench", name: "Single Arm DB Bench Press", sets: "3", reps: "10", notes: "Anti-rotation core" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "a_inclat", name: "Incline DB Lateral Raise", sets: "2", reps: "15-20", notes: "Strict form" },
+                        { id: "a_hammer", name: "Dumbbell Hammer Curl", sets: "2", reps: "12-15", notes: "Bicep/Forearm" },
+                        { id: "a_tricep", name: "Tricep Rope Pushdowns", sets: "3", reps: "12-15", notes: "Lockout" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "a_farmers2", name: "Farmers Carry", sets: "1", reps: "30m", notes: "Heavy" },
+                        { id: "a_suit2", name: "Suitcase Carry", sets: "1", reps: "30m", notes: "No leaning" },
+                        { id: "a_zerch2", name: "Zercher Carry", sets: "1", reps: "30m", notes: "High elbows" }
+                    ]}
+                ]
+            }
+          },
+          // --- BLOCK 2 ---
+          2: {
+            1: {
+                title: "Block 2: Anabolic I",
+                focus: "Strength & Power",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Hip Weight Shift", "Prone Shoulder Handcuffs", "Wide Stance Deep Squats"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "b_ks_dl", name: "Kick Stand Trap Bar DL", sets: "3", reps: "3/side", intensity: "80-85%", notes: "3 reps each side" },
+                        { id: "b_vjump", name: "DB Vertical Jumps", sets: "3", reps: "5", intensity: "10% BW", notes: "Weighted power" },
+                        { id: "b_splitpogo", name: "Split Stance POGOs", sets: "3", reps: "10", intensity: "BW", notes: "Elasticity" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "b_towelpull", name: "Towel Pull Ups", sets: "3", reps: "6-9", notes: "Grip strength" },
+                        { id: "b_hamcurl", name: "Seated Hamstring Curl", sets: "3", reps: "12-15", notes: "Squeeze" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "b_cossack", name: "Cossack Squat", sets: "2", reps: "6", notes: "Comfortable depth" },
+                        { id: "b_dberir", name: "DB Ext/Int Rotation (Eccentric)", sets: "2", reps: "12", notes: "4 sec lowering" },
+                        { id: "b_wristroll", name: "Wrist Rollers", sets: "2", reps: "6", notes: "Up & down = 1 rep" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "b_farmers", name: "Farmers Carry", sets: "1", reps: "40m", notes: "Progressive load" },
+                        { id: "b_kbrack", name: "KB Rack Carry", sets: "1", reps: "40m", notes: "Maintain posture" },
+                        { id: "b_waiters", name: "Waiters Carry", sets: "1", reps: "40m", notes: "Shoulder stability" }
+                    ]}
+                ]
+            },
+            2: {
+                title: "Block 2: Anabolic II",
+                focus: "Force & Hypertrophy",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Hip Weight Shift", "Prone Shoulder Handcuffs", "Wide Stance Deep Squats"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "b_pendlay", name: "Pendlay Row", sets: "3", reps: "6-9", intensity: "85-90%", notes: "Explosive pull" },
+                        { id: "b_bandpush", name: "Band Assisted Plyo Push Up", sets: "3", reps: "6", intensity: "BW", notes: "Speed focus" },
+                        { id: "b_ballclinch", name: "Med Ball Clinch Isometric", sets: "3", reps: "30s", notes: "Crush the ball" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "b_narrowbench", name: "Narrow Grip Bench Press", sets: "3", reps: "6-9", notes: "Tricep dominant" },
+                        { id: "b_trxrow", name: "TRX Inverted Row", sets: "3", reps: "12", notes: "Add vest if easy" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "b_sideplank", name: "Side Plank Bench Pump", sets: "2", reps: "10", notes: "Per side" },
+                        { id: "b_standcalf", name: "Standing Calf Raises", sets: "2", reps: "12-15", notes: "Heavy" },
+                        { id: "b_kbtib", name: "KB Tibial Raises", sets: "2", reps: "12", notes: "Ankle strength" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "b_sledpush", name: "Sled Push", sets: "1", reps: "30m", notes: "Explosive steps" },
+                        { id: "b_sleddrag", name: "Sled Drag", sets: "1", reps: "30m", notes: "Steady pace" },
+                        { id: "b_latsled", name: "Lateral Sled Drag", sets: "1", reps: "30m", notes: "Adductor focus" }
+                    ]}
+                ]
+            },
+            3: {
+                title: "Block 2: Anabolic III",
+                focus: "Hypertrophy & Durability",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Hip Weight Shift", "Prone Shoulder Handcuffs", "Wide Stance Deep Squats"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "b_bbrdl", name: "Barbell RDL", sets: "3", reps: "6-9", intensity: "70-80%", notes: "Hinge pattern" },
+                        { id: "b_bandkb", name: "Banded KB Swing", sets: "3", reps: "8", intensity: "30% BW", notes: "Accommodating resistance" },
+                        { id: "b_latskater", name: "Lateral Skater Jumps", sets: "3", reps: "5/side", notes: "Power output" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "b_ffesplit", name: "FFE Split Squats", sets: "3", reps: "10", notes: "Front foot elevated" },
+                        { id: "b_zpress", name: "Dumbbell Z Press", sets: "3", reps: "12", notes: "Seated on floor" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "b_lu", name: "Lu Raise", sets: "2", reps: "15-20", notes: "Full ROM lateral" },
+                        { id: "b_zotto", name: "Zottman Curl", sets: "2", reps: "8-12", notes: "Rotate at top" },
+                        { id: "b_ovh", name: "Overhead Tricep Ext", sets: "2", reps: "15", notes: "Stretch focus" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "b_carry2", name: "Carry Circuit", sets: "1", reps: "8 min", notes: "Grip/Core" }
+                    ]}
+                ]
+            }
+          },
+          // --- BLOCK 3 ---
+          3: {
+            1: {
+                title: "Block 3: Anabolic I",
+                focus: "Strength & Power",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Prone Shoulder Complex", "Kettlebell Arm Bar", "Split Stance POGOs"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "c_frontsquat", name: "Pause Front Squat", sets: "3", reps: "4-6", intensity: "80-85%", notes: "2 sec pause" },
+                        { id: "c_depth", name: "Depth Drop to Jump", sets: "3", reps: "3", intensity: "BW", notes: "Reactive ground contact" },
+                        { id: "c_pulse", name: "Split Squat Pulse Jump", sets: "3", reps: "3/side", intensity: "BW", notes: "Elastic power" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "c_widepull", name: "Strict Wide Grip Pull Up", sets: "3", reps: "6-9", notes: "Lats focus" },
+                        { id: "c_slrdl", name: "Single Leg Posted RDL", sets: "3", reps: "12", notes: "Glute/Ham" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "c_cossack", name: "Cossack Squat", sets: "2", reps: "5/side", notes: "Mobility/Strength" },
+                        { id: "c_subscap", name: "Subscapularis Rotations", sets: "2", reps: "15", notes: "Shoulder health" },
+                        { id: "c_hang", name: "Deadhang", sets: "1", reps: "Max Hold", notes: "30-90 sec" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "c_carry", name: "Carry Circuit", sets: "1", reps: "10 min", notes: "Volume carry" }
+                    ]}
+                ]
+            },
+            2: {
+                title: "Block 3: Anabolic II",
+                focus: "Force & Hypertrophy",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Prone Shoulder Complex", "Kettlebell Arm Bar", "Split Stance POGOs"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "c_rowiso", name: "Pendlay Row Iso Sandwich", sets: "3", reps: "4+4", intensity: "85-90%", notes: "4 under, 4 over grip" },
+                        { id: "c_ballpush", name: "Band Assisted Ballistic Push Up", sets: "5", reps: "3", intensity: "BW", notes: "Max speed" },
+                        { id: "c_clinch", name: "Med Ball Clinch Isometric", sets: "3", reps: "30s", notes: "Max squeeze" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "c_pausebench", name: "Barbell Pause Bench Press", sets: "3", reps: "6-9", notes: "2 sec pause on chest" },
+                        { id: "c_trxprot", name: "TRX Protraction Row", sets: "3", reps: "8", notes: "Reach at bottom" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "c_sideplank", name: "Side Plank Bench Pump", sets: "2", reps: "12", notes: "Per side" },
+                        { id: "c_seatcalf", name: "Seated Calf Raises", sets: "2", reps: "20", notes: "Burn out" },
+                        { id: "c_kbtib", name: "KB Tibial Raises", sets: "2", reps: "20", notes: "Shin pump" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "c_sled", name: "Sled Drag & Push", sets: "1", reps: "10 min", notes: "Conditioning" }
+                    ]}
+                ]
+            },
+            3: {
+                title: "Block 3: Anabolic III",
+                focus: "Hypertrophy & Armour",
+                duration: "60m",
+                warmup: ["Jump Rope Flow", "Prone Shoulder Complex", "Kettlebell Arm Bar", "Split Stance POGOs"],
+                clusters: [
+                    { title: "Cluster A", rest: "2-3 min", exercises: [
+                        { id: "c_snatchdl", name: "Snatch Grip RDL", sets: "3", reps: "8", intensity: "70-80%", notes: "Wide grip" },
+                        { id: "c_stagkb", name: "Banded Staggered KB Swing", sets: "3", reps: "8/side", intensity: "40% BW", notes: "Unilateral power" },
+                        { id: "c_skater", name: "Lateral Skater Jumps", sets: "3", reps: "5/side", notes: "Power" }
+                    ]},
+                    { title: "Cluster B", rest: "90 sec", exercises: [
+                        { id: "c_revlunge", name: "Barbell Reverse Lunge", sets: "3", reps: "6", notes: "Heavy loading" },
+                        { id: "c_pushpress", name: "Dumbbell Push Press", sets: "3", reps: "8", notes: "Use legs" }
+                    ]},
+                    { title: "Cluster C", rest: "60 sec", exercises: [
+                        { id: "c_reardelt", name: "Rear Delt Lengtheners", sets: "2", reps: "12", notes: "Posterior chain" },
+                        { id: "c_preach", name: "Single Arm Preacher Curl", sets: "2", reps: "12", notes: "Isolation" },
+                        { id: "c_tri", name: "Overhead Tricep Ext", sets: "3", reps: "12", notes: "Volume" }
+                    ]},
+                    { title: "Finisher", exercises: [
+                        { id: "c_carry2", name: "Carry Circuit", sets: "1", reps: "10 min", notes: "Mental toughness" }
+                    ]}
+                ]
+            }
+          }
+        };
+        
+        const GAS_TANK_SESSION = {
+            title: "Assault Bike VO2",
+            focus: "Elite Conditioning",
+            duration: "20m",
+            warmup: ["5 min Easy", "Dynamic Stretch"],
+            clusters: [
+                { title: "Protocol", rest: "5m REST", exercises: [{ id: "max_sprint", name: "Max Sprint", sets: "2-6", reps: "30-80s", intensity: "100%", notes: "All out" }] }
+            ]
+        };
+        
+        const RECOVERY_SESSION = {
+            title: "System Reset",
+            focus: "Parasympathetic Recovery",
+            duration: "30-45m",
+            warmup: [],
+            clusters: [
+                { title: "Low Intensity Motion", exercises: [{ id: "zone1_walk", name: "Zone 1 Walk", sets: "1", reps: "20-30 min", notes: "Nasal breathing only" }] },
+                { title: "Mobility", exercises: [
+                    { id: "foam_roll", name: "Foam Rolling", sets: "1", reps: "10 min", notes: "Quads, Lats, T-Spine" },
+                    { id: "couch_stretch", name: "Couch Stretch", sets: "2", reps: "2 min", notes: "Per side" },
+                    { id: "9090", name: "90/90 Hip Switch", sets: "1", reps: "5 min", notes: "Continuous flow" }
+                ]},
+                { title: "Optional Restoration", exercises: [
+                    { id: "cold_plunge", name: "Cold Plunge / Shower", sets: "1", reps: "3-5 min", notes: "< 50°F" },
+                    { id: "sauna", name: "Sauna", sets: "1", reps: "15-20 min", notes: "Heat exposure" }
+                ]}
+            ]
+        };
+
+        const DURABILITY = {
+          d1: { title: "Circuit 1", exercises: [
+              { id: "d1_neck", name: "Loaded Neck Flexion", sets: "2", reps: "15-20", notes: "Start light/BW" }, 
+              { id: "d1_squat", name: "Heel Elevated Plate Squats", sets: "2", reps: "20", notes: "Quad focus" },
+              { id: "d1_rot", name: "Subscapularis Rotations", sets: "2", reps: "15", notes: "Shoulder health" }
+          ]},
+          d2: { title: "Circuit 2", exercises: [
+              { id: "d2_neck", name: "Loaded Neck Harness Ext", sets: "2", reps: "15-20", notes: "Posterior chain" }, 
+              { id: "d2_pistol", name: "Band Assisted Pistol Squat", sets: "2", reps: "6-20", notes: "Unilateral stability" },
+              { id: "d2_y", name: "Incline Y Raises", sets: "2", reps: "12-15", notes: "Lower traps" }
+          ]},
+          d3: { title: "Circuit 3", exercises: [
+              { id: "d3_neck", name: "Loaded Lateral Neck Flexion", sets: "2", reps: "15", notes: "Thick neck" }, 
+              { id: "d3_calf", name: "FFE Split Squat + Calf Iso", sets: "2", reps: "30-60s", notes: "Isometric hold" },
+              { id: "d3_lat", name: "Dumbbell Lat Pullover", sets: "2", reps: "8", notes: "Thoracic extension" }
+          ]}
+        };
+
+        const SCHEDULE_CYCLES = [
+          { 
+            id: 'A', 
+            label: 'Cycle A', 
+            days: [
+                { day: 'Mon', type: 'bjj', durId: 'd1', note: 'Technique' },
+                { day: 'Tue', type: 'lift', sessionId: 1 }, 
+                { day: 'Wed', type: 'bjj', durId: 'd2', note: 'Technique' },
+                { day: 'Thu', type: 'lift', sessionId: 2 }, 
+                { day: 'Fri', type: 'gas', note: 'Elite Gas' }, 
+                { day: 'Sat', type: 'bjj', durId: 'd3', note: 'Open Mat' }, 
+                { day: 'Sun', type: 'rest', note: 'Rest' }
+            ] 
+          },
+          { 
+            id: 'B', 
+            label: 'Cycle B', 
+            days: [
+                { day: 'Mon', type: 'bjj', durId: 'd1', note: 'Technique' },
+                { day: 'Tue', type: 'lift', sessionId: 3 }, 
+                { day: 'Wed', type: 'bjj', durId: 'd2', note: 'Technique' },
+                { day: 'Thu', type: 'lift', sessionId: 1 }, 
+                { day: 'Fri', type: 'gas', note: 'Elite Gas' }, 
+                { day: 'Sat', type: 'bjj', durId: 'd3', note: 'Open Mat' }, 
+                { day: 'Sun', type: 'rest', note: 'Rest' }
+            ] 
+          },
+          { 
+            id: 'C', 
+            label: 'Cycle C', 
+            days: [
+                { day: 'Mon', type: 'bjj', durId: 'd1', note: 'Technique' },
+                { day: 'Tue', type: 'lift', sessionId: 2 }, 
+                { day: 'Wed', type: 'bjj', durId: 'd2', note: 'Technique' },
+                { day: 'Thu', type: 'lift', sessionId: 3 }, 
+                { day: 'Fri', type: 'gas', note: 'Elite Gas' }, 
+                { day: 'Sat', type: 'bjj', durId: 'd3', note: 'Open Mat' }, 
+                { day: 'Sun', type: 'rest', note: 'Rest' }
+            ] 
+          }
+        ];
+
+        // --- Helpers for Auto-Rotation ---
+        const getWeekNumber = (d) => {
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return { year: d.getUTCFullYear(), week: weekNo };
+        };
+
+        const getCurrentWeekID = () => {
+            const w = getWeekNumber(new Date());
+            return `${w.year}-W${w.week}`;
+        };
+        
+        const getYouTubeLink = (query) => `https://www.youtube.com/results?search_query=${encodeURIComponent(query + " exercise")}`;
+
+        // --- Components ---
+
+        const Modal = ({ isOpen, onClose, children }) => {
+            if (!isOpen) return null;
+            return (
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in cursor-pointer"
+                    onClick={onClose}
+                >
+                    <div 
+                        className="stealth-card w-full max-w-2xl max-h-[90vh] overflow-y-auto relative cursor-default"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors z-20 text-white/60 hover:text-white">
+                            <Icons.X size={20} />
+                        </button>
+                        {children}
+                    </div>
+                </div>
+            );
+        };
+
+        const BlockPreviewModal = ({ isOpen, onClose, blockIndex }) => {
+            const [viewBlock, setViewBlock] = useState(blockIndex);
+
+            // Reset view to currently active block when modal opens
+            useEffect(() => {
+                if (isOpen) setViewBlock(blockIndex);
+            }, [isOpen, blockIndex]);
+
+            if (!isOpen) return null;
+            
+            // Safety check for block data
+            const blockSessions = SESSIONS[viewBlock] || SESSIONS[1];
+
+            return (
+                <Modal isOpen={isOpen} onClose={onClose}>
+                    <div className="p-8">
+                        <div className="flex flex-col gap-6 mb-8">
+                            <div className="text-xl font-bold text-white flex items-center gap-2">
+                                <Icons.Barbell size={24} /> 
+                                <span>Block {viewBlock} Protocol</span>
+                            </div>
+
+                            {/* Block Switcher Tabs */}
+                            <div className="grid grid-cols-3 gap-2">
+                                {[1, 2, 3].map((b) => (
+                                    <button 
+                                        key={b}
+                                        onClick={() => setViewBlock(b)}
+                                        className={`py-2 text-xs font-bold uppercase tracking-widest border rounded transition-all ${
+                                            viewBlock === b 
+                                            ? 'bg-white text-black border-white' 
+                                            : 'bg-transparent border-white/10 text-white/40 hover:text-white hover:border-white/30'
+                                        }`}
+                                    >
+                                        Block {b}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-8">
+                            {[1, 2, 3].map(sessionId => {
+                                const session = blockSessions[sessionId];
+                                if (!session) return null;
+                                return (
+                                    <div key={sessionId} className="border border-white/10 rounded p-6 bg-white/5">
+                                        <div className="flex justify-between items-start mb-4 border-b border-white/10 pb-4">
+                                            <div>
+                                                <h3 className="text-lg font-bold text-white font-display">{session.title}</h3>
+                                                <p className="text-xs text-white/50 font-mono uppercase tracking-widest">{session.focus}</p>
+                                            </div>
+                                            <div className="text-xs font-mono text-white/40 bg-white/5 px-2 py-1 rounded">
+                                                {session.duration}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="space-y-6">
+                                            {session.clusters.map((cluster, i) => (
+                                                <div key={i}>
+                                                    <div className="flex items-baseline gap-2 mb-2">
+                                                        <span className="text-sm font-bold text-emerald-500">{cluster.title}</span>
+                                                        {cluster.rest && <span className="text-[10px] text-white/30 font-mono">({cluster.rest} Rest)</span>}
+                                                    </div>
+                                                    <ul className="space-y-1">
+                                                        {cluster.exercises.map((ex, j) => (
+                                                            <li key={j} className="text-xs text-white/70 grid grid-cols-12 gap-2">
+                                                                <span className="col-span-6 truncate text-white">{ex.name}</span>
+                                                                <span className="col-span-3 text-white/40 font-mono text-right">{ex.sets} x {ex.reps}</span>
+                                                                <span className="col-span-3 text-white/30 text-right truncate">{ex.notes}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </Modal>
+            );
+        };
+
+        const SettingsModal = ({ isOpen, onClose, currentCycleIndex, setCycleIndex, currentSixBladeIndex, setSixBladeIndex, onReset, blockIndex, setBlockIndex, weeksCompleted, setWeeksCompleted, onViewBlock }) => {
+            if (!isOpen) return null;
+            return (
+                <Modal isOpen={isOpen} onClose={onClose}>
+                    <div className="p-8">
+                        <div className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                            <Icons.Gear size={24} /> Settings & Calibration
+                        </div>
+                        
+                        <div className="space-y-8">
+                            {/* Block Selector */}
+                            <div>
+                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-3">Training Block</label>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {[1, 2, 3].map((blk) => (
+                                        <button 
+                                            key={blk}
+                                            onClick={() => setBlockIndex(blk)}
+                                            className={`p-3 border rounded transition-all ${blockIndex === blk ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/50 hover:text-white'}`}
+                                        >
+                                            <div className="font-bold text-sm">Block {blk}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="mt-4 flex items-center gap-4">
+                                    <span className="text-xs text-white/40">Block Progress:</span>
+                                    <div className="flex gap-1">
+                                        {[1, 2, 3, 4].map(wk => (
+                                            <button 
+                                                key={wk}
+                                                onClick={() => setWeeksCompleted(wk - 1)}
+                                                className={`w-6 h-6 text-[10px] border rounded ${weeksCompleted >= wk - 1 ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500' : 'border-white/10 text-white/20'}`}
+                                            >
+                                                {wk}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <button 
+                                    onClick={onViewBlock}
+                                    className="mt-4 w-full py-2 flex items-center justify-center gap-2 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all text-xs font-bold uppercase tracking-widest text-white/60 hover:text-white rounded"
+                                >
+                                    <Icons.Barbell size={14} /> View Full Block Intel
+                                </button>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-3">Weekly Cycle Rotation</label>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {SCHEDULE_CYCLES.map((cycle, idx) => (
+                                        <button 
+                                            key={cycle.id}
+                                            onClick={() => setCycleIndex(idx)}
+                                            className={`p-3 border rounded transition-all ${currentCycleIndex === idx ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/50 hover:text-white'}`}
+                                        >
+                                            <div className="font-bold text-sm">{cycle.label}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs uppercase tracking-widest text-white/40 mb-3">Six Blades Focus</label>
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                    {SIX_BLADE_WEEKS.map((week, idx) => (
+                                        <button 
+                                            key={week.id}
+                                            onClick={() => setSixBladeIndex(idx)}
+                                            className={`p-2 border rounded text-left transition-all ${currentSixBladeIndex === idx ? 'bg-white text-black border-white' : 'bg-transparent border-white/10 text-white/50 hover:text-white'}`}
+                                        >
+                                            <div className="font-bold text-xs">{week.id}: {week.label}</div>
+                                            <div className="text-[10px] opacity-70 truncate">{week.focus}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="pt-6 border-t border-white/10">
+                                <button onClick={onReset} className="text-xs text-red-500 hover:text-red-400 underline">Reset All Progress & Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+            );
+        };
+
+        const ProgressBar = ({ current, total, label }) => {
+            const percentage = Math.min(100, Math.max(0, (current / total) * 100));
+            return (
+                <div className="w-full">
+                    <div className="flex justify-between items-end mb-2">
+                        <span className="text-[10px] uppercase tracking-widest text-white/40">{label}</span>
+                        <span className="text-xs font-mono text-white/80">{current} / {total}</span>
+                    </div>
+                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-white progress-bar" style={{ width: `${percentage}%` }}></div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Weekly Journal Component ---
+        const WeeklyJournal = ({ weekId }) => {
+            const [entry, setEntry] = useState('');
+            
+            useEffect(() => {
+                const savedEntry = localStorage.getItem(`journal_${weekId}`);
+                if (savedEntry) setEntry(savedEntry);
+                else setEntry('');
+            }, [weekId]);
+
+            const handleChange = (e) => {
+                const newValue = e.target.value;
+                setEntry(newValue);
+                localStorage.setItem(`journal_${weekId}`, newValue);
+            };
+
+            return (
+                <div className="h-full flex flex-col">
+                    <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest text-white/40">
+                        <Icons.Journal size={12} /> Weekly War Log
+                    </div>
+                    <textarea 
+                        className="flex-1 w-full bg-black/20 border border-white/10 rounded p-3 text-xs font-mono text-white/70 focus:outline-none focus:border-white/30 focus:bg-black/40 resize-none placeholder-white/20"
+                        placeholder="Log injuries, wins, or strategic notes for the week..."
+                        value={entry}
+                        onChange={handleChange}
+                    />
+                </div>
+            );
+        };
+
+        const DayCard = ({ dayData, isToday, onSessionClick, onDurabilityClick, sixBladeFocus, completedItems, dayId, currentWeekId, currentCycleId, currentBlockId }) => {
+            const isRest = dayData.type === 'rest';
+            const isLift = dayData.type === 'lift';
+            const isBJJ = dayData.type === 'bjj';
+            const isGas = dayData.type === 'gas';
+            const isRecovery = dayData.type === 'recovery';
+            
+            // Check for Open Mat specifically
+            const isOpenMat = dayData.note === 'Open Mat';
+            const bjjTitle = isOpenMat ? 'OPEN MAT' : sixBladeFocus;
+            const bjjLabel = isOpenMat ? 'Free Training' : 'Skill Work';
+
+            // Calculate progress for this day
+            let totalItems = 0;
+            let completedCount = 0;
+
+            const checkCompletion = (exId) => {
+                return completedItems[`${currentWeekId}-${dayId}-${exId}`];
+            };
+
+            if (isLift) {
+                // Dynamically fetch session based on Block ID and Session ID
+                const session = SESSIONS[currentBlockId][dayData.sessionId];
+                if(session) {
+                    session.clusters.forEach(c => c.exercises.forEach(e => {
+                        totalItems++;
+                        if (checkCompletion(e.id)) completedCount++;
+                    }));
+                }
+            }
+            if (isGas) {
+                const session = GAS_TANK_SESSION;
+                session.clusters.forEach(c => c.exercises.forEach(e => {
+                    totalItems++;
+                    if (checkCompletion(e.id)) completedCount++;
+                }));
+            }
+            if (isRecovery) {
+                const session = RECOVERY_SESSION;
+                session.clusters.forEach(c => c.exercises.forEach(e => {
+                    totalItems++;
+                    if (checkCompletion(e.id)) completedCount++;
+                }));
+            }
+            if (isBJJ && dayData.durId) {
+                const dur = DURABILITY[dayData.durId];
+                dur.exercises.forEach(e => {
+                    totalItems++;
+                    if (checkCompletion(e.id)) completedCount++;
+                });
+            }
+
+            const isComplete = totalItems > 0 && totalItems === completedCount;
+            
+            const getTypePattern = () => {
+                if (isComplete) return "border-white/30 bg-white/5"; // Consistent 'complete' border
+                if (isLift) return "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent";
+                if (isGas) return "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent";
+                if (isOpenMat) return "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent";
+                if (isRecovery) return "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-500/10 via-transparent to-transparent";
+                return "";
+            };
+
+            // Determine the Main Click Action for the Card
+            let handleCardClick = undefined;
+            if (isLift) {
+                const session = SESSIONS[currentBlockId][dayData.sessionId];
+                handleCardClick = () => onSessionClick({session, dayId});
+            } else if (isGas) {
+                handleCardClick = () => onSessionClick({session: GAS_TANK_SESSION, dayId});
+            } else if (isRecovery) {
+                handleCardClick = () => onSessionClick({session: RECOVERY_SESSION, dayId});
+            } else if (isBJJ && dayData.durId) {
+                handleCardClick = () => onDurabilityClick({durability: DURABILITY[dayData.durId], dayId});
+            }
+
+            return (
+                <div 
+                    onClick={handleCardClick}
+                    className={`stealth-card p-6 min-h-[240px] flex flex-col justify-between group ${isToday ? 'border-white/20' : ''} ${getTypePattern()} ${handleCardClick ? 'cursor-pointer hover:border-white/20' : ''}`}
+                >
+                    <div className="flex justify-between items-start pointer-events-none">
+                        <span className="text-3xl font-display font-bold text-white tracking-tight">{dayData.day}</span>
+                        {isToday && (
+                            <div className="flex items-center gap-2 px-2 py-1 rounded-sm border border-emerald-500/30 bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
+                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Active</span>
+                            </div>
+                        )}
+                        {!isToday && isComplete && <div className="text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-1"><Icons.Check size={12}/> Complete</div>}
+                    </div>
+
+                    <div className="space-y-4 mt-6 flex-1 flex flex-col">
+                        {isLift && (
+                            <div className="w-full text-left group-hover:translate-x-1 transition-transform">
+                                <div className="text-[10px] uppercase tracking-widest text-white/40 mb-2 flex items-center gap-1"><Icons.Barbell size={10}/> Strength Protocol</div>
+                                <div className="font-display text-xl font-bold text-white group-hover:text-white/80 transition-colors border-l-2 border-white pl-3">{SESSIONS[currentBlockId][dayData.sessionId].title}</div>
+                            </div>
+                        )}
+                        
+                        {isGas && (
+                            <div className="w-full text-left group-hover:translate-x-1 transition-transform">
+                                <div className="text-[10px] uppercase tracking-widest text-white/60 mb-2 flex items-center gap-1"><Icons.Fire size={10}/> Conditioning</div>
+                                <div className="font-display text-xl font-bold text-white group-hover:text-white/80 transition-colors border-l-2 border-white/60 pl-3">Elite Gas</div>
+                            </div>
+                        )}
+                        
+                        {isRecovery && (
+                             <div className="w-full text-left group-hover:translate-x-1 transition-transform">
+                                <div className="text-[10px] uppercase tracking-widest text-teal-500/60 mb-2 flex items-center gap-1"><Icons.Activity size={10}/> Active Recovery</div>
+                                <div className="font-display text-xl font-bold text-white group-hover:text-white/80 transition-colors border-l-2 border-teal-500/60 pl-3">System Reset</div>
+                            </div>
+                        )}
+
+                        {isBJJ && (
+                            <div className="group-hover:translate-x-1 transition-transform">
+                                <div className="text-[10px] uppercase tracking-widest text-white/40 mb-2 flex items-center gap-1"><Icons.Lightning size={10}/> {bjjLabel}</div>
+                                <div className={`text-lg font-medium text-white mb-3 border-l-2 ${isOpenMat ? 'border-blue-500 text-blue-100' : 'border-white/20'} pl-3`}>{bjjTitle}</div>
+                                {dayData.durId && (
+                                    <div className="flex items-center gap-2 text-xs text-white/50 hover:text-white transition-colors py-1 pl-3 w-full">
+                                        <div className={`w-3 h-3 border border-white/20 rounded-full flex items-center justify-center ${completedCount > 0 ? 'bg-white' : ''}`}>
+                                            {completedCount > 0 && <Icons.Check size={8} className="text-black" />}
+                                        </div>
+                                        <span>Durability: {DURABILITY[dayData.durId].title}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {isRest && (
+                            <div className="flex-1 mt-auto" onClick={(e) => e.stopPropagation()}>
+                                <WeeklyJournal weekId={currentWeekId} />
+                            </div>
+                        )}
+
+                        {totalItems > 0 && (
+                            <div className="mt-auto pt-4 border-t border-white/5 pointer-events-none">
+                                <ProgressBar current={completedCount} total={totalItems} label="Daily Objectives" />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const ProgressPanel = ({ completed, total }) => {
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            return (
+                <div className="stealth-card p-6 flex flex-col justify-between h-32 relative overflow-hidden">
+                    <div className="text-xs uppercase tracking-widest text-white/40 relative z-10">Weekly Protocol Status</div>
+                    <div className="relative z-10">
+                        <div className="text-4xl font-display font-bold text-white mb-2">{percentage}%</div>
+                        <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-full bg-white progress-bar" style={{ width: `${percentage}%` }}></div>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-white/5 to-transparent pointer-events-none" style={{ opacity: percentage / 100 }}></div>
+                </div>
+            );
+        };
+
+        function App() {
+            // State
+            const [currentWeekId, setCurrentWeekId] = useState('');
+            const [blockIndex, setBlockIndex] = useState(1); // 1, 2, or 3
+            const [cycleIndex, setCycleIndex] = useState(0); // 0, 1, 2 (Cycle A, B, C)
+            const [sixBladeWeekIndex, setSixBladeWeekIndex] = useState(0); // 0-11
+            const [weeksCompletedInBlock, setWeeksCompletedInBlock] = useState(0); // 0-3 (4 weeks total)
+            
+            const [selectedSessionData, setSelectedSessionData] = useState(null); 
+            const [selectedDurabilityData, setSelectedDurabilityData] = useState(null); 
+            const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+            const [isBlockPreviewOpen, setIsBlockPreviewOpen] = useState(false);
+            const [today, setToday] = useState('Mon');
+            
+            // Scroll State for Smart Header
+            const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+            const [lastScrollY, setLastScrollY] = useState(0);
+
+            const [completedItems, setCompletedItems] = useState(() => {
+                const saved = localStorage.getItem('submission_specialist_progress');
+                return saved ? JSON.parse(saved) : {};
+            });
+
+            // New State for Weight Logs
+            const [weightLogs, setWeightLogs] = useState(() => {
+                const saved = localStorage.getItem('submission_specialist_weights');
+                return saved ? JSON.parse(saved) : {};
+            });
+
+            // Scroll Listener for Smart Header
+            useEffect(() => {
+                const handleScroll = () => {
+                    const currentScrollY = window.scrollY;
+                    
+                    if (currentScrollY < 50) {
+                        setIsHeaderVisible(true);
+                    } else if (currentScrollY > lastScrollY) {
+                        // Scrolling DOWN -> Hide
+                        setIsHeaderVisible(false);
+                    } else {
+                        // Scrolling UP -> Show
+                        setIsHeaderVisible(true);
+                    }
+                    setLastScrollY(currentScrollY);
+                };
+
+                window.addEventListener('scroll', handleScroll, { passive: true });
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, [lastScrollY]);
+
+            // Persist core state with Safe Mode
+            useEffect(() => {
+                const savedBlock = localStorage.getItem('submission_block_idx');
+                const savedCycle = localStorage.getItem('submission_cycle_idx');
+                const savedSkill = localStorage.getItem('submission_skill_idx');
+                const savedWeekId = localStorage.getItem('submission_week_id');
+                const savedWeeksCompleted = localStorage.getItem('submission_weeks_completed');
+
+                if (savedWeekId) {
+                    setCurrentWeekId(savedWeekId);
+                    if (savedBlock) {
+                        const b = parseInt(savedBlock);
+                        // Safety: Ensure block is valid 1-3
+                        setBlockIndex(b >= 1 && b <= 3 ? b : 1);
+                    }
+                    if (savedCycle) setCycleIndex(parseInt(savedCycle));
+                    if (savedSkill) setSixBladeWeekIndex(parseInt(savedSkill));
+                    if (savedWeeksCompleted) setWeeksCompletedInBlock(parseInt(savedWeeksCompleted));
+                } else {
+                    // Initial Setup
+                    const w = getWeekNumber(new Date());
+                    setCurrentWeekId(`${w.year}-W${w.week}`);
+                    setBlockIndex(1); // Default Block 1
+                    setCycleIndex(0); // Default A
+                    setSixBladeWeekIndex(0); // Default A
+                    setWeeksCompletedInBlock(0);
+                }
+            }, []);
+
+            // Save on change
+            useEffect(() => {
+                if (!currentWeekId) return;
+                localStorage.setItem('submission_block_idx', blockIndex);
+                localStorage.setItem('submission_cycle_idx', cycleIndex);
+                localStorage.setItem('submission_skill_idx', sixBladeWeekIndex);
+                localStorage.setItem('submission_week_id', currentWeekId);
+                localStorage.setItem('submission_weeks_completed', weeksCompletedInBlock);
+            }, [blockIndex, cycleIndex, sixBladeWeekIndex, currentWeekId, weeksCompletedInBlock]);
+
+            useEffect(() => {
+                localStorage.setItem('submission_specialist_progress', JSON.stringify(completedItems));
+            }, [completedItems]);
+
+            useEffect(() => {
+                localStorage.setItem('submission_specialist_weights', JSON.stringify(weightLogs));
+            }, [weightLogs]);
+
+            const toggleItem = (dayId, exerciseId) => {
+                setCompletedItems(prev => {
+                    const key = `${currentWeekId}-${dayId}-${exerciseId}`;
+                    const newState = { ...prev };
+                    if (newState[key]) delete newState[key];
+                    else newState[key] = true;
+                    return newState;
+                });
+            };
+
+            const markAllComplete = (dayId, exercises) => {
+                setCompletedItems(prev => {
+                    const newState = { ...prev };
+                    exercises.forEach(ex => {
+                        const key = `${currentWeekId}-${dayId}-${ex.id}`;
+                        newState[key] = true;
+                    });
+                    return newState;
+                });
+            };
+
+            const logWeight = (exerciseId, weight) => {
+                setWeightLogs(prev => ({
+                    ...prev,
+                    [exerciseId]: {
+                        weight: parseFloat(weight),
+                        date: new Date().toISOString(),
+                    }
+                }));
+            };
+
+            const completeWeek = () => {
+                const nextCycle = (cycleIndex + 1) % 3;
+                setCycleIndex(nextCycle);
+                const nextSkill = (sixBladeWeekIndex + 1) % 12;
+                setSixBladeWeekIndex(nextSkill);
+                const nextWeeksCompleted = weeksCompletedInBlock + 1;
+                if (nextWeeksCompleted >= 4) {
+                    const nextBlock = blockIndex >= 3 ? 1 : blockIndex + 1;
+                    setBlockIndex(nextBlock);
+                    setWeeksCompletedInBlock(0); 
+                    setCycleIndex(0); 
+                } else {
+                    setWeeksCompletedInBlock(nextWeeksCompleted);
+                }
+                const newId = `W${Date.now()}`; 
+                setCurrentWeekId(newId);
+            };
+
+            const resetAll = () => {
+                localStorage.clear();
+                window.location.reload();
+            };
+            
+            useEffect(() => {
+                const handleMouseMove = (e) => {
+                    document.querySelectorAll('.stealth-card').forEach(card => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    });
+                };
+                window.addEventListener('mousemove', handleMouseMove);
+                return () => window.removeEventListener('mousemove', handleMouseMove);
+            }, []);
+
+            useEffect(() => {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                setToday(days[new Date().getDay()]);
+            }, []);
+
+            const currentCycle = SCHEDULE_CYCLES[cycleIndex] || SCHEDULE_CYCLES[0];
+            const currentBJJWeek = SIX_BLADE_WEEKS[sixBladeWeekIndex] || SIX_BLADE_WEEKS[0];
+
+            // Get Today's Mission
+            const todaysMission = useMemo(() => {
+                const todayData = currentCycle.days.find(d => d.day === today);
+                if (!todayData) return { title: 'REST', subtitle: 'System Recovery', type: 'rest' };
+
+                // Fallback if blockIndex is somehow invalid
+                const safeBlockIndex = SESSIONS[blockIndex] ? blockIndex : 1;
+
+                if (todayData.type === 'lift') {
+                    return { 
+                        title: 'STRENGTH', 
+                        subtitle: SESSIONS[safeBlockIndex][todayData.sessionId].title,
+                        type: 'lift',
+                        data: todayData
+                    };
+                }
+                if (todayData.type === 'gas') {
+                    return { 
+                        title: 'CONDITIONING', 
+                        subtitle: 'Elite Gas Protocol',
+                        type: 'gas',
+                        data: todayData
+                    };
+                }
+                 if (todayData.type === 'recovery') {
+                    return { 
+                        title: 'RECOVERY', 
+                        subtitle: 'System Reset',
+                        type: 'recovery',
+                        data: todayData
+                    };
+                }
+                if (todayData.type === 'bjj') {
+                    const isOM = todayData.note === 'Open Mat';
+                    return { 
+                        title: isOM ? 'OPEN MAT' : 'SKILL', 
+                        subtitle: isOM ? 'Free Training' : currentBJJWeek.focus,
+                        type: 'bjj',
+                        data: todayData
+                    };
+                }
+                return { title: 'REST', subtitle: 'System Recovery', type: 'rest' };
+            }, [currentCycle, blockIndex, currentBJJWeek, today]);
+
+            const handleMissionClick = () => {
+                // Fallback for click safety
+                const safeBlockIndex = SESSIONS[blockIndex] ? blockIndex : 1;
+
+                if (todaysMission.type === 'lift') {
+                    setSelectedSessionData({ session: SESSIONS[safeBlockIndex][todaysMission.data.sessionId], dayId: today });
+                } else if (todaysMission.type === 'gas') {
+                    setSelectedSessionData({ session: GAS_TANK_SESSION, dayId: today });
+                } else if (todaysMission.type === 'recovery') {
+                    setSelectedSessionData({ session: RECOVERY_SESSION, dayId: today });
+                } else if (todaysMission.type === 'bjj' && todaysMission.data.durId) {
+                    setSelectedDurabilityData({ durability: DURABILITY[todaysMission.data.durId], dayId: today });
+                }
+            };
+
+            const weeklyStats = useMemo(() => {
+                if (!currentWeekId) return { total: 0, completed: 0 };
+                let total = 0;
+                let completed = 0;
+                
+                // Get current cycle's sessions using BLOCK ID (safe access)
+                const cycleSessions = SESSIONS[blockIndex] || SESSIONS[1];
+
+                currentCycle.days.forEach(day => {
+                    const dayId = day.day;
+                    if (day.type === 'lift') {
+                        cycleSessions[day.sessionId].clusters.forEach(c => c.exercises.forEach(e => {
+                            total++;
+                            if (completedItems[`${currentWeekId}-${dayId}-${e.id}`]) completed++;
+                        }));
+                    } else if (day.type === 'gas') {
+                        GAS_TANK_SESSION.clusters.forEach(c => c.exercises.forEach(e => {
+                            total++;
+                            if (completedItems[`${currentWeekId}-${dayId}-${e.id}`]) completed++;
+                        }));
+                    } else if (day.type === 'recovery') {
+                        RECOVERY_SESSION.clusters.forEach(c => c.exercises.forEach(e => {
+                            total++;
+                            if (completedItems[`${currentWeekId}-${dayId}-${e.id}`]) completed++;
+                        }));
+                    }
+                    if (day.durId) {
+                        DURABILITY[day.durId].exercises.forEach(e => {
+                            total++;
+                            if (completedItems[`${currentWeekId}-${dayId}-${e.id}`]) completed++;
+                        });
+                    }
+                });
+                return { total, completed };
+            }, [completedItems, currentCycle, currentWeekId, blockIndex]);
+
+            return (
+                <div className="min-h-screen pb-20 selection:bg-white/20 selection:text-white relative">
+                    <div className="noise-overlay"></div>
+                    <div className="fixed top-0 left-0 w-full h-[50vh] bg-mist-gradient pointer-events-none z-0"></div>
+                    
+                    {/* Header - Fixed, Glass, Smart Hide/Show */}
+                    <header 
+                        className={`fixed top-0 left-0 w-full z-40 pt-8 px-6 pb-6 bg-[#050505]/80 backdrop-blur-md border-b border-white/5 transition-transform duration-500 ease-in-out ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}
+                    >
+                        {/* Glass Shine/Reflection Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-0"></div>
+
+                        <div className="max-w-7xl mx-auto flex justify-between items-center relative z-10">
+                            <div className="flex items-center gap-4">
+                                <SixBladesLogo />
+                                <div>
+                                    <h1 className="text-sm font-bold tracking-[0.2em] uppercase text-white">Submission Specialist</h1>
+                                    <div className="text-[10px] text-white/40 font-mono flex items-center gap-2">
+                                        OPERATIONAL // BLOCK {blockIndex} 
+                                        <span className="text-white/20">|</span> 
+                                        WK {weeksCompletedInBlock + 1}/4
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-4 md:gap-6">
+                                <button 
+                                    onClick={completeWeek}
+                                    className="flex items-center gap-2 px-3 py-2 md:px-4 bg-white text-black text-xs font-bold uppercase tracking-wider hover:bg-white/90 transition-colors"
+                                >
+                                    <Icons.Check size={14} /> <span>Complete Week</span>
+                                </button>
+                                <button 
+                                    onClick={() => setIsSettingsOpen(true)}
+                                    className="text-white/40 hover:text-white transition-colors"
+                                >
+                                    <Icons.Gear size={20} />
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Main - Added pt-40 to account for fixed header */}
+                    <main className="max-w-7xl mx-auto px-6 pt-40 relative z-10">
+                        
+                        {/* Control & Stats Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                            
+                            {/* Cycle Controls */}
+                            <div className="md:col-span-2 stealth-card p-6 flex flex-col justify-center gap-6">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[10px] uppercase tracking-widest text-white/40 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                        Block {blockIndex}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        {/* Block Progress Bar */}
+                                        <div className="flex gap-1">
+                                            {[0,1,2,3].map(i => (
+                                                <div key={i} className={`h-1.5 w-6 rounded-sm ${i <= weeksCompletedInBlock ? 'bg-white' : 'bg-white/10'}`}></div>
+                                            ))}
+                                        </div>
+                                        <span className="font-display font-bold text-white ml-3 text-lg">{currentCycle.label}</span>
+                                    </div>
+                                </div>
+                                <div className="w-full h-px bg-white/10"></div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[10px] uppercase tracking-widest text-white/40 flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+                                        Focus
+                                    </span>
+                                    <div className="flex items-center gap-4">
+                                        <span className="font-display font-bold text-white min-w-[160px] text-center text-lg">{currentBJJWeek.label}: {currentBJJWeek.focus}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ProgressPanel completed={weeklyStats.completed} total={weeklyStats.total} />
+                            
+                            {/* Today's Mission Card (Replaces "Active Protocol") */}
+                            <div 
+                                onClick={handleMissionClick}
+                                className={`stealth-card p-6 flex flex-col justify-between h-32 cursor-pointer hover:border-white/20 transition-all group relative overflow-hidden`}
+                            >
+                                <div className="flex items-center justify-between relative z-10">
+                                    <div className="text-xs uppercase tracking-widest text-white/40">Current Objective</div>
+                                    <div className="text-[10px] font-mono text-emerald-500 animate-pulse">TODAY</div>
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="text-2xl font-display font-bold text-white mb-1 truncate group-hover:text-emerald-400 transition-colors">{todaysMission.title}</div>
+                                    <div className="text-xs font-mono text-white/50 truncate">{todaysMission.subtitle}</div>
+                                </div>
+                                {/* Background Icon for visual flair */}
+                                <div className="absolute -bottom-4 -right-4 text-white/5 transform rotate-12 group-hover:scale-110 transition-transform duration-500">
+                                    {todaysMission.type === 'lift' && <Icons.Barbell size={80} />}
+                                    {todaysMission.type === 'gas' && <Icons.Fire size={80} />}
+                                    {todaysMission.type === 'bjj' && <Icons.Lightning size={80} />}
+                                    {todaysMission.type === 'recovery' && <Icons.Activity size={80} />}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Calendar Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-slide-up">
+                            {/* Monday - Large Card */}
+                            <div className="md:col-span-2">
+                                <DayCard 
+                                    dayData={currentCycle.days[0]} 
+                                    isToday={currentCycle.days[0].day === today}
+                                    onSessionClick={setSelectedSessionData}
+                                    onDurabilityClick={setSelectedDurabilityData}
+                                    sixBladeFocus={currentBJJWeek.focus}
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[0].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                            <div className="md:col-span-1">
+                                <DayCard 
+                                    dayData={currentCycle.days[1]} 
+                                    isToday={currentCycle.days[1].day === today} 
+                                    onSessionClick={setSelectedSessionData} 
+                                    onDurabilityClick={setSelectedDurabilityData} 
+                                    sixBladeFocus={currentBJJWeek.focus} 
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[1].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                            <div className="md:col-span-1">
+                                <DayCard 
+                                    dayData={currentCycle.days[2]} 
+                                    isToday={currentCycle.days[2].day === today} 
+                                    onSessionClick={setSelectedSessionData} 
+                                    onDurabilityClick={setSelectedDurabilityData} 
+                                    sixBladeFocus={currentBJJWeek.focus} 
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[2].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+
+                            <div className="md:col-span-1">
+                                <DayCard 
+                                    dayData={currentCycle.days[3]} 
+                                    isToday={currentCycle.days[3].day === today} 
+                                    onSessionClick={setSelectedSessionData} 
+                                    onDurabilityClick={setSelectedDurabilityData} 
+                                    sixBladeFocus={currentBJJWeek.focus} 
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[3].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                            {/* Friday - Large Card */}
+                            <div className="md:col-span-2">
+                                <DayCard 
+                                    dayData={currentCycle.days[4]} 
+                                    isToday={currentCycle.days[4].day === today}
+                                    onSessionClick={setSelectedSessionData}
+                                    onDurabilityClick={setSelectedDurabilityData}
+                                    sixBladeFocus={currentBJJWeek.focus}
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[4].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                            <div className="md:col-span-1">
+                                <DayCard 
+                                    dayData={currentCycle.days[5]} 
+                                    isToday={currentCycle.days[5].day === today} 
+                                    onSessionClick={setSelectedSessionData} 
+                                    onDurabilityClick={setSelectedDurabilityData} 
+                                    sixBladeFocus={currentBJJWeek.focus} 
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[5].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                            
+                             <div className="md:col-span-4">
+                                <DayCard 
+                                    dayData={currentCycle.days[6]} 
+                                    isToday={currentCycle.days[6].day === today} 
+                                    onSessionClick={setSelectedSessionData} 
+                                    onDurabilityClick={setSelectedDurabilityData} 
+                                    sixBladeFocus={currentBJJWeek.focus} 
+                                    completedItems={completedItems}
+                                    dayId={currentCycle.days[6].day}
+                                    currentWeekId={currentWeekId}
+                                    currentCycleId={currentCycle.id}
+                                    currentBlockId={blockIndex}
+                                />
+                            </div>
+                        </div>
+
+                    </main>
+
+                    {/* Modals */}
+                    <Modal isOpen={!!selectedSessionData} onClose={() => setSelectedSessionData(null)}>
+                        {selectedSessionData && (
+                            <div className="p-8">
+                                {/* Added pr-12 to prevent overlap with close button */}
+                                <div className="border-b border-white/10 pb-6 mb-8 flex justify-between items-start pr-12">
+                                    <div>
+                                        <div className="flex items-center gap-2 text-white/50 text-xs uppercase tracking-widest mb-2 font-mono">
+                                            <Icons.Activity size={12}/> Session Data
+                                        </div>
+                                        <h2 className="text-3xl font-display font-bold text-white mb-2 tracking-tight">{selectedSessionData.session.title}</h2>
+                                        <div className="flex gap-4 text-xs font-mono text-white/40">
+                                            <span>FOCUS: {selectedSessionData.session.focus.toUpperCase()}</span>
+                                            <span>TIME: {selectedSessionData.session.duration}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-xs uppercase text-white/40 mb-1">Status</div>
+                                        <div className="text-xl font-bold text-white">
+                                            {(() => {
+                                                let count = 0;
+                                                let total = 0;
+                                                selectedSessionData.session.clusters.forEach(c => c.exercises.forEach(e => {
+                                                    total++;
+                                                    if (completedItems[`${currentWeekId}-${selectedSessionData.dayId}-${e.id}`]) count++;
+                                                }));
+                                                return total > 0 ? `${Math.round((count/total)*100)}%` : '0%';
+                                            })()}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-8">
+                                    <div className="bg-white/[0.02] p-6 border border-white/5">
+                                        <h4 className="text-xs font-bold text-white mb-4 uppercase tracking-widest">Initialization Sequence</h4>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {selectedSessionData.session.warmup.map((w, i) => (
+                                                <div key={i} className="text-xs font-mono text-white/60 flex items-center gap-2">
+                                                    <span className="w-1 h-1 bg-white/40"></span> {w}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {selectedSessionData.session.clusters.map((cluster, i) => (
+                                        <div key={i}>
+                                            <div className="flex justify-between items-baseline mb-4 border-l-2 border-white pl-3">
+                                                <h3 className="font-display font-bold text-xl text-white">{cluster.title}</h3>
+                                                {cluster.rest && <span className="text-[10px] font-mono text-white/60 border border-white/10 px-2 py-1 bg-white/5">R: {cluster.rest}</span>}
+                                            </div>
+                                            <div className="space-y-2">
+                                                {cluster.exercises.map((ex, j) => {
+                                                    const isChecked = !!completedItems[`${currentWeekId}-${selectedSessionData.dayId}-${ex.id}`];
+                                                    const lastWeight = weightLogs[ex.id]?.weight;
+                                                    const targetWeight = lastWeight ? lastWeight + 5 : null;
+                                                    
+                                                    // Determine if it's a bodyweight or cardio exercise
+                                                    const isBW = ex.intensity === 'BW' || ex.intensity === 'Light' || ex.intensity === 'Bodyweight' || ex.id === 'max_sprint';
+
+                                                    return (
+                                                        <div 
+                                                            key={j} 
+                                                            className={`flex flex-col sm:flex-row sm:justify-between sm:items-center p-4 border transition-all ${isChecked ? 'bg-white/10 border-white/30' : 'bg-[#0F0F0F] border-white/5 hover:border-white/20'}`}
+                                                        >
+                                                            <div className="flex items-center gap-4 cursor-pointer mb-3 sm:mb-0" onClick={() => toggleItem(selectedSessionData.dayId, ex.id)}>
+                                                                <div className={`stealth-checkbox ${isChecked ? 'checked' : ''} flex items-center justify-center`}>
+                                                                    {isChecked && <div className="w-2 h-2 bg-white"></div>}
+                                                                </div>
+                                                                <div>
+                                                                    {/* Hyperlinked Exercise Name */}
+                                                                    <a 
+                                                                        href={getYouTubeLink(ex.name)} 
+                                                                        target="_blank" 
+                                                                        rel="noopener noreferrer" 
+                                                                        className={`font-bold text-sm hover:text-emerald-400 hover:underline flex items-center gap-2 ${isChecked ? 'text-white line-through decoration-white/30' : 'text-white'}`}
+                                                                        onClick={(e) => e.stopPropagation()} // Prevent checking box when clicking link
+                                                                    >
+                                                                        {ex.name} <Icons.Video />
+                                                                    </a>
+                                                                    {ex.notes && <div className="text-[10px] text-white/40 mt-1 font-mono">// {ex.notes}</div>}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center justify-end gap-6 w-full sm:w-auto">
+                                                                {/* Conditionally Render Weight Input */}
+                                                                {!isBW && (
+                                                                    <div className="flex flex-col items-end">
+                                                                        {lastWeight && (
+                                                                            <div className="flex items-center gap-1 text-[10px] text-white/40 mb-1 font-mono">
+                                                                                <span>Last: {lastWeight}</span>
+                                                                                <span className="text-white/20">→</span>
+                                                                                <span className="text-emerald-500 font-bold flex items-center gap-0.5">
+                                                                                    <Icons.Target /> {targetWeight}
+                                                                                </span>
+                                                                            </div>
+                                                                        )}
+                                                                        <div className="flex items-center gap-2">
+                                                                            <input 
+                                                                                type="number" 
+                                                                                placeholder="LBS"
+                                                                                className="w-16 bg-black border border-white/10 text-white text-xs font-mono p-1 text-right focus:border-white/50 outline-none"
+                                                                                onBlur={(e) => logWeight(ex.id, e.target.value)}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className="text-right min-w-[60px]">
+                                                                    <div className={`font-mono text-sm font-bold ${isChecked ? 'text-white/50' : 'text-white'}`}>{ex.sets} x {ex.reps}</div>
+                                                                    {ex.intensity && <div className="text-[10px] text-white/40 mt-1">{ex.intensity}</div>}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => markAllComplete(selectedSessionData.dayId, selectedSessionData.session.clusters.flatMap(c => c.exercises))}
+                                        className="w-full py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-white/90 transition-colors mt-8 flex items-center justify-center gap-2"
+                                    >
+                                        <Icons.Check size={16} /> Complete Mission
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </Modal>
+
+                    <Modal isOpen={!!selectedDurabilityData} onClose={() => setSelectedDurabilityData(null)}>
+                        {selectedDurabilityData && (
+                            <div className="p-10">
+                                <div className="text-center mb-8">
+                                    <div className="w-12 h-12 border border-white/20 flex items-center justify-center mx-auto mb-6 text-white rotate-45">
+                                        <div className="-rotate-45"><Icons.ShieldCheck size={24} /></div>
+                                    </div>
+                                    <h2 className="text-2xl font-display font-bold text-white mb-2">{selectedDurabilityData.durability.title}</h2>
+                                    <p className="text-white/40 text-xs font-mono mb-2 uppercase tracking-widest">Structural Integrity Protocol</p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    {selectedDurabilityData.durability.exercises.map((ex, i) => {
+                                        const isChecked = !!completedItems[`${currentWeekId}-${selectedDurabilityData.dayId}-${ex.id}`];
+                                        return (
+                                            <div 
+                                                key={i} 
+                                                onClick={() => toggleItem(selectedDurabilityData.dayId, ex.id)}
+                                                className={`flex justify-between items-center p-4 border transition-all cursor-pointer select-none ${isChecked ? 'bg-white/10 border-white/30' : 'bg-[#0F0F0F] border-white/5 hover:border-white/20'}`}
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`stealth-checkbox flex items-center justify-center`}>
+                                                        {isChecked && <div className="w-2 h-2 bg-white"></div>}
+                                                    </div>
+                                                    <a 
+                                                        href={getYouTubeLink(ex.name)} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className={`font-bold text-sm hover:text-emerald-400 hover:underline flex items-center gap-2 ${isChecked ? 'text-white line-through decoration-white/30' : 'text-white'}`}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        {ex.name} <Icons.Video />
+                                                    </a>
+                                                </div>
+                                                <span className={`font-mono text-xs px-2 py-1 ${isChecked ? 'text-white/50 bg-transparent' : 'text-white/60 bg-white/5'}`}>{ex.sets} x {ex.reps}</span>
+                                            </div>
+                                        );
+                                    })}
+                                    <button
+                                        onClick={() => markAllComplete(selectedDurabilityData.dayId, selectedDurabilityData.durability.exercises)}
+                                        className="w-full py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-white/90 transition-colors mt-8 flex items-center justify-center gap-2"
+                                    >
+                                        <Icons.Check size={16} /> Complete Mission
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </Modal>
+
+                    <BlockPreviewModal 
+                        isOpen={isBlockPreviewOpen}
+                        onClose={() => {
+                            setIsBlockPreviewOpen(false);
+                            setIsSettingsOpen(true); // Return to Settings
+                        }}
+                        blockIndex={blockIndex}
+                    />
+
+                    <SettingsModal 
+                        isOpen={isSettingsOpen} 
+                        onClose={() => setIsSettingsOpen(false)}
+                        currentCycleIndex={cycleIndex}
+                        setCycleIndex={setCycleIndex}
+                        currentSixBladeIndex={sixBladeWeekIndex}
+                        setSixBladeIndex={setSixBladeWeekIndex}
+                        onReset={resetAll}
+                        blockIndex={blockIndex}
+                        setBlockIndex={setBlockIndex}
+                        weeksCompleted={weeksCompletedInBlock}
+                        setWeeksCompleted={setWeeksCompletedInBlock}
+                        onViewBlock={() => {
+                            setIsSettingsOpen(false);
+                            setIsBlockPreviewOpen(true);
+                        }}
+                    />
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

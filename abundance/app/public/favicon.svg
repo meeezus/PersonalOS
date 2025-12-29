@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37"/>
+      <stop offset="100%" style="stop-color:#a08628"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#0a0a0a" stroke="url(#gold)" stroke-width="2"/>
+  <!-- Katana blade (simplified) -->
+  <path d="M30 70 L70 30 L72 32 L32 72 Z" fill="url(#gold)"/>
+  <!-- Katana guard (tsuba) -->
+  <ellipse cx="50" cy="50" rx="8" ry="4" fill="#0a0a0a" stroke="url(#gold)" stroke-width="1.5" transform="rotate(-45 50 50)"/>
+  <!-- Handle wrap pattern -->
+  <line x1="35" y1="65" x2="28" y2="72" stroke="url(#gold)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="32" y1="68" x2="25" y2="75" stroke="url(#gold)" stroke-width="2" stroke-linecap="round"/>
+</svg>

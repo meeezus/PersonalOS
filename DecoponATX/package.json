@@ -1,0 +1,32 @@
+{
+  "name": "decoponatx-lead-research",
+  "version": "1.0.0",
+  "description": "DecoponATX lead research tool using Exa API with tiered search strategies for Austin tech companies",
+  "main": "leadResearch.js",
+  "scripts": {
+    "search": "node leadResearch.js",
+    "list": "node leadResearch.js --list",
+    "search:funded": "node leadResearch.js recentlyFundedStartups",
+    "search:wellness": "node leadResearch.js wellnessPrograms",
+    "search:creative": "node leadResearch.js creativeCulture",
+    "search:female-founders": "node leadResearch.js femaleFounders",
+    "search:holiday": "node leadResearch.js holidayParties"
+  },
+  "keywords": [
+    "exa",
+    "leads",
+    "austin",
+    "tech",
+    "decopon",
+    "corporate-events"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "exa-js": "^2.0.12"
+  }
+}

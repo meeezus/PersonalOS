@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PersonalOS - Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0A0A0A;
+            --bg-hover: #0F0F0F;
+            --text-primary: #E5E5E5;
+            --text-highlight: #F5F5F5;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-bright: rgba(255, 255, 255, 0.2);
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        header {
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-highlight);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-primary);
+            opacity: 0.6;
+        }
+
+        /* Stealth Card */
+        .stealth-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 2px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stealth-card:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-bright);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Card Headers */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-highlight);
+        }
+
+        .card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+        }
+
+        /* Priority Card */
+        .priority-card {
+            grid-column: 1 / -1;
+        }
+
+        .priority-text {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-highlight);
+            margin-bottom: 1rem;
+        }
+
+        /* Business Cards */
+        .business-card {
+            position: relative;
+        }
+
+        .business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px 0 0 2px;
+        }
+
+        .business-card[data-business="decopon"]::before {
+            background: var(--accent-blue);
+        }
+
+        .business-card[data-business="musha"]::before {
+            background: var(--accent-purple);
+        }
+
+        .business-card[data-business="health"]::before {
+            background: var(--accent-green);
+        }
+
+        /* Task List */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--border-bright);
+            border-radius: 2px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--text-highlight);
+        }
+
+        .task-checkbox.completed {
+            background: var(--text-highlight);
+            border-color: var(--text-highlight);
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 0.9375rem;
+        }
+
+        .task-text.completed {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .task-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            opacity: 0.5;
+            margin-top: 0.25rem;
+        }
+
+        /* Resistance Log */
+        .resistance-item {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 2px solid var(--accent-red);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 2px;
+        }
+
+        .resistance-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .resistance-voice {
+            color: var(--accent-red);
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .resistance-action {
+            color: var(--accent-green);
+            font-size: 0.875rem;
+        }
+
+        /* Stats */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-highlight);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            opacity: 0.5;
+            margin-top: 0.5rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--text-highlight);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--text-highlight);
+            color: var(--bg-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.875rem;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            opacity: 0.5;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.5;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PERSONALOS</h1>
+            <p class="subtitle">Command Center</p>
+        </header>
+
+        <main>
+            <!-- Today's Priority -->
+            <div class="stealth-card priority-card" style="margin-bottom: 2rem;">
+                <div class="card-header">
+                    <h2 class="card-title">Today's Priority</h2>
+                    <span class="card-label" id="current-date">Loading...</span>
+                </div>
+                <p class="priority-text" id="priority-text">Loading your focus for today...</p>
+            </main>
+        </div>
+
+            <!-- Week 1 Stats (if applicable) -->
+            <div class="stealth-card" style="margin-bottom: 2rem;" id="week1-stats">
+                <div class="card-header">
+                    <h2 class="card-title">Week 1 Progress</h2>
+                    <span class="card-label">DecoponATX Challenge</span>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat">
+                        <div class="stat-value" id="emails-sent">0</div>
+                        <div class="stat-label">Emails Sent</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="emails-target">90</div>
+                        <div class="stat-label">Target</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="completion-pct">0%</div>
+                        <div class="stat-label">Complete</div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Views -->
+            <div class="grid grid-3" style="margin-bottom: 2rem;">
+                <!-- DecoponATX -->
+                <div class="stealth-card business-card" data-business="decopon">
+                    <div class="card-header">
+                        <h2 class="card-title">DecoponATX</h2>
+                        <span class="card-label">Active</span>
+                    </div>
+                    <ul class="task-list" id="decopon-tasks">
+                        <li class="loading">Loading tasks...</li>
+                    </ul>
+                </div>
+
+                <!-- Musha Shugyo -->
+                <div class="stealth-card business-card" data-business="musha">
+                    <div class="card-header">
+                        <h2 class="card-title">Musha Shugyo</h2>
+                        <span class="card-label">Content</span>
+                    </div>
+                    <ul class="task-list" id="musha-tasks">
+                        <li class="loading">Loading tasks...</li>
+                    </ul>
+                </div>
+
+                <!-- Health Coaching -->
+                <div class="stealth-card business-card" data-business="health">
+                    <div class="card-header">
+                        <h2 class="card-title">Health Coaching</h2>
+                        <span class="card-label">Clients</span>
+                    </div>
+                    <ul class="task-list" id="health-tasks">
+                        <li class="loading">Loading tasks...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Resistance Log -->
+            <div class="stealth-card">
+                <div class="card-header">
+                    <h2 class="card-title">Resistance Log</h2>
+                    <span class="card-label">This Week</span>
+                </div>
+                <div id="resistance-log">
+                    <p class="loading">Loading resistance moments...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+
+        // Fetch data from API
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/dashboard');
+                const data = await response.json();
+
+                // Update priority
+                document.getElementById('priority-text').textContent = data.priority || 'No priority set for today';
+
+                // Update Week 1 stats
+                if (data.week1) {
+                    document.getElementById('emails-sent').textContent = data.week1.sent;
+                    document.getElementById('emails-target').textContent = data.week1.target;
+                    document.getElementById('completion-pct').textContent = data.week1.percent + '%';
+                    document.getElementById('progress-fill').style.width = data.week1.percent + '%';
+                } else {
+                    document.getElementById('week1-stats').style.display = 'none';
+                }
+
+                // Update business tasks
+                updateTaskList('decopon-tasks', data.tasks.decopon);
+                updateTaskList('musha-tasks', data.tasks.musha);
+                updateTaskList('health-tasks', data.tasks.health);
+
+                // Update resistance log
+                updateResistanceLog(data.resistance);
+
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+            }
+        }
+
+        function updateTaskList(elementId, tasks) {
+            const container = document.getElementById(elementId);
+
+            if (!tasks || tasks.length === 0) {
+                container.innerHTML = '<li class="empty-state">No active tasks</li>';
+                return;
+            }
+
+            container.innerHTML = tasks.map(task => `
+                <li class="task-item">
+                    <div class="task-checkbox ${task.completed ? 'completed' : ''}"></div>
+                    <div>
+                        <div class="task-text ${task.completed ? 'completed' : ''}">${task.text}</div>
+                        ${task.due ? `<div class="task-meta">Due: ${task.due}</div>` : ''}
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function updateResistanceLog(items) {
+            const container = document.getElementById('resistance-log');
+
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p class="empty-state">No resistance moments logged this week</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="resistance-item">
+                    <div class="resistance-time">${item.time}</div>
+                    <div class="resistance-voice">"${item.voice}"</div>
+                    <div class="resistance-action">→ ${item.action}</div>
+                </div>
+            `).join('');
+        }
+
+        // Load dashboard on page load
+        loadDashboard();
+
+        // Refresh every 5 minutes
+        setInterval(loadDashboard, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

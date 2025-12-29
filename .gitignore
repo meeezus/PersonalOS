@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.log
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Personal data (don't commit sensitive info)
+Memory/episode_logs/
+Memory/observations.md
+People/
+
+# Node modules (anywhere in the project)
+node_modules/
+**/node_modules/
+
+# Temporary files
+*.tmp
+*.swp
+.vscode/
