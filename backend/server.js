@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import briefingRoutes from './routes/briefing.js';
 import chatRoutes from './routes/chat.js';
 import filesRoutes from './routes/files.js';
+import remindersRoutes from './routes/reminders.js';
+import projectsRoutes from './routes/projects.js';
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use('/api/briefing', briefingRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/files', filesRoutes);
+app.use('/api/reminders', remindersRoutes);
+app.use('/api/projects', projectsRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
