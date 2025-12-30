@@ -9,7 +9,8 @@ dist/
 
 # Logs
 *.log
-logs/
+logs/*
+!logs/.gitkeep
 
 # IDE
 .idea/
