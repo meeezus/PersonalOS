@@ -6,10 +6,20 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "test": "ts-node src/index.ts --test",
+    "test:overview": "ts-node src/jobs/morning-overview.ts",
+    "test:email-scanner": "ts-node src/jobs/email-scanner.ts",
+    "test:relationship": "ts-node src/jobs/relationship-refresh.ts",
+    "test:calendar": "ts-node src/mcp/calendar.ts",
+    "oauth": "ts-node scripts/generate-oauth-token.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
-  "keywords": ["personalos", "agent", "automation", "ai"],
+  "keywords": [
+    "personalos",
+    "agent",
+    "automation",
+    "ai"
+  ],
   "author": "Michael Enriquez",
   "license": "MIT",
   "type": "commonjs",
@@ -20,6 +30,8 @@
     "bree": "^9.2.6",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
+    "googleapis": "^169.0.0",
+    "open": "^11.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

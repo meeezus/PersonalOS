@@ -8,15 +8,14 @@ const scheduler = new Bree({
       name: 'morning-overview',
       cron: '0 8 * * *', // 8:00 AM daily
     },
-    // Phase 2: Add more jobs
-    // {
-    //   name: 'email-scanner',
-    //   interval: '1h', // Every hour
-    // },
-    // {
-    //   name: 'relationship-refresh',
-    //   cron: '0 9 * * 1', // Monday 9am
-    // },
+    {
+      name: 'email-scanner',
+      interval: '4h', // Every 4 hours
+    },
+    {
+      name: 'relationship-refresh',
+      cron: '0 9 * * 1', // Monday 9am
+    },
   ],
 });
 
