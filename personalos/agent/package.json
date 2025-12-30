@@ -11,6 +11,8 @@
     "test:relationship": "ts-node src/jobs/relationship-refresh.ts",
     "test:calendar": "ts-node src/mcp/calendar.ts",
     "test:discord": "ts-node src/discord/bot.ts",
+    "test:oura": "ts-node src/mcp/oura.ts",
+    "sync:oura": "ts-node src/jobs/oura-sync.ts",
     "oauth": "ts-node scripts/generate-oauth-token.ts",
     "build": "tsc",
     "start": "node dist/index.js"

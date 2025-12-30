@@ -253,9 +253,13 @@ async function handleAsk(message: Message, question: string): Promise<void> {
       `You are Michael's AI assistant. Answer briefly and directly (under 200 words): ${question}`,
       'haiku'
     );
-    await message.channel.send(response);
+    if (message.channel.isSendable()) {
+      await message.channel.send(response);
+    }
   } catch (err) {
-    await message.channel.send('Failed to get response from Claude.');
+    if (message.channel.isSendable()) {
+      await message.channel.send('Failed to get response from Claude.');
+    }
   }
 }
 

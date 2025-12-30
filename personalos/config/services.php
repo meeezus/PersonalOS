@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'oura' => [
+        'token' => env('OURA_TOKEN'),
+    ],
+
 ];

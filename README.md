@@ -1,103 +1,103 @@
-# PersonalOS
+# Musha Shugyo OS (MSOS)
 
-A web-based personal operating system inspired by JFDI, designed for executive function support with ADHD-friendly workflows.
+A personal operating system for discipline, execution, and sovereignty. Built for ADHD minds that need structure without rigidity.
 
-## What is PersonalOS?
+## What is MSOS?
 
-PersonalOS is an AI-powered dashboard that helps you stay focused and execute on your goals. It combines:
-- **AI-generated daily briefings** that read your context files
-- **Smart task prioritization** from your unified weekly plan
-- **Time-blocked schedules** for focused execution
-- **Goal alignment tracking** with progress visualization
+MSOS is an AI-powered life operating system that combines:
+- **Executive function support** - Task tracking, goal alignment, daily structure
+- **Relationship management** - Contact tracking, stale relationship alerts
+- **Health integration** - Oura Ring data for sleep/readiness
+- **AI briefings** - Claude-powered morning overviews
+- **Automation** - Scheduled jobs, Discord bot, email scanning
 
-## Current State (v0.1 - In Development)
+## Architecture
 
-### What Works
-- ✅ Flask backend serving on `localhost:3002`
-- ✅ Task parser reading from `Tasks/Active/Unified_Week1_Plan.md`
-- ✅ AI briefing endpoint (integrates with Claude via `opencode prompt`)
-- ✅ Home page with 4 sections: Overview, Focus, Schedule, Goals
-- ✅ Tailscale support for mobile access
-- ✅ Submission Specialist dark aesthetic (#050505 background)
-
-### What's Being Built
-- 🚧 Full JFDI feature parity (see design goals below)
-- 🚧 Interactive checkboxes for task completion
-- 🚧 Project cards with expandable subtasks
-- 🚧 Better AI context integration
-- 🚧 Mobile-responsive design
-
-## Tech Stack
-
-**Backend:**
-- Python 3 + Flask
-- Task parsing from markdown files
-- Claude AI integration via OpenCode
-
-**Frontend:**
-- Vanilla JavaScript (no framework overhead)
-- CSS with Submission Specialist color palette
-- Async/await for API calls
-
-**Infrastructure:**
-- Local-first (runs on `localhost:3002`)
-- Tailscale for remote access from iPhone
-- File-based data storage (no database)
+```
+PersonalOS/
+├── personalos/           # Laravel 11 API + Inertia frontend
+│   ├── app/              # Models, Controllers, Services
+│   ├── agent/            # TypeScript automation system
+│   │   ├── src/jobs/     # Scheduled jobs (morning-overview, email-scanner)
+│   │   ├── src/discord/  # Discord bot
+│   │   └── src/mcp/      # Gmail, Calendar, Oura integrations
+│   ├── database/         # SQLite + migrations
+│   └── routes/           # API routes
+├── Memory/               # Identity, goals, observations (Obsidian)
+├── Tasks/                # Daily plans, weekly schedules
+├── Projects/             # Active project notes
+├── People/               # Contact notes
+├── DecoponATX/           # Business focus (cold email challenge)
+└── docs/references/      # JFDI, Andy-timeline, Abundance materials
+```
 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.x
-- OpenCode CLI (`opencode` command available)
-- Tailscale (optional, for mobile access)
+- PHP 8.2+
+- Composer
+- Node.js 18+
+- SQLite
 
 ### Installation
 
-1. Clone this repo
-2. Start the server: `./Scripts/start_personalos.sh`
-3. Open: `http://localhost:3002`
-
-## File Structure
-
-```
-PersonalOS/
-├── Dashboard/
-│   ├── server.py              # Flask backend
-│   ├── personalos.html        # Main UI
-│   └── personalos.js          # Frontend logic
-├── Memory/
-│   ├── identity.md            # Who you are
-│   ├── goals.md              # Current objectives
-│   └── episode_logs/         # Session history
-├── Tasks/
-│   └── Active/
-│       └── Unified_Week1_Plan.md  # Time-blocked weekly plan
-└── Scripts/
-    └── start_personalos.sh   # Launch script
+```bash
+cd personalos
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
 ```
 
-## Design Inspiration: JFDI
+### Running
 
-PersonalOS is heavily inspired by [JFDI](https://thesephist.com/posts/jfdi/) by Linus Lee.
+```bash
+# Start Laravel (API + Web UI)
+cd personalos
+php artisan serve
 
-**Key Difference:** Uses Submission Specialist aesthetic (dark, minimal) instead of JFDI's lighter design.
-
-## Aesthetic: Submission Specialist
-
-```css
---bg-primary: #050505;
---text-primary: #ffffff;
---accent-green: #10b981;
---accent-blue: #3b82f6;
---border: #171717;
+# Start Agent (in another terminal)
+cd personalos/agent
+npm run dev
 ```
 
-## API Endpoints
+**Access:** http://localhost:8000
+**Login:** test@personalos.dev / password
 
-- `GET /` - Main dashboard
-- `GET /api/dashboard` - Dashboard data
-- `GET /api/briefing` - AI-generated daily briefing
-- `GET /api/tasks/today` - Today's tasks from Unified plan
+## Core Modules
+
+### Goals & Tasks
+Track objectives with measurable targets. Tasks link to goals for alignment visibility.
+
+### Contacts & Relationships
+CRM-lite for personal relationships. Tracks last contact, relationship strength, context notes.
+
+### Oura Integration
+Syncs sleep, readiness, and activity scores. Morning briefings factor in your physical state.
+
+### Agent System
+TypeScript automation running on a scheduler:
+- **Morning Overview** (8 AM) - AI briefing based on goals, tasks, calendar
+- **Email Scanner** (4x daily) - Gmail analysis via MCP
+- **Relationship Refresh** (Mondays) - Stale contact alerts
+
+### Discord Bot
+Commands: `!status`, `!overview`, `!goals`, `!capture`, `!contacts`
+
+## Philosophy
+
+Named after the Japanese concept of "warrior's pilgrimage" - a period of intense training and self-development. MSOS is built on three pillars:
+
+1. **Sovereignty** - Own your data, your systems, your execution
+2. **Discipline** - Structure that serves you, not constrains you
+3. **Evidence** - Track wins to counter the "I can't make shit happen" voice
+
+## Coming Soon
+
+- **Abundance Warrior** - Daily mindset rituals for money/execution beliefs
+- **Voice capture** - Quick logging via speech
+- **Mobile PWA** - Full access from phone
 
 ## License
 

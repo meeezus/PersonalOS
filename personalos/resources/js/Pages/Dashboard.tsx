@@ -1,9 +1,37 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
+import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout';
 import GoalWidget from '@/Components/GoalWidget';
+import OuraWidget from '@/Components/OuraWidget';
 import { Clock, RefreshCw, Calendar, Mail, CheckCircle2, Circle, Zap } from 'lucide-react';
 import { Goal, Task, Contact, User } from '@/types';
+
+interface OuraData {
+    date: string;
+    readiness_score: number | null;
+    sleep_score: number | null;
+    activity_score: number | null;
+    total_sleep_duration: number | null;
+    steps: number | null;
+    resting_heart_rate: number | null;
+    hrv_average: number | null;
+}
+
+interface OuraInsights {
+    energyLevel: 'high' | 'medium' | 'low' | 'unknown';
+    recommendedTaskTypes: string[];
+    trainingRecommendation: string | null;
+    patterns: string[];
+    currentData: {
+        date: string;
+        readiness: number | null;
+        sleep: number | null;
+        activity: number | null;
+        sleepDuration: number | null;
+        steps: number | null;
+    } | null;
+}
 
 interface DashboardProps {
     auth: {
@@ -12,14 +40,42 @@ interface DashboardProps {
     goals: Goal[];
     tasks: Task[];
     contacts: Contact[];
+    ouraData?: OuraData | null;
+    ouraInsights?: OuraInsights | null;
 }
 
-export default function Dashboard({ auth, goals, tasks, contacts }: DashboardProps) {
+export default function Dashboard({ auth, goals, tasks, contacts, ouraData, ouraInsights }: DashboardProps) {
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+    const [localOuraData, setLocalOuraData] = React.useState<OuraData | null>(ouraData || null);
+    const [localOuraInsights, setLocalOuraInsights] = React.useState<OuraInsights | null>(ouraInsights || null);
+    const [isOuraLoading, setIsOuraLoading] = React.useState(false);
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
         setTimeout(() => setIsRefreshing(false), 1000);
+    };
+
+    const handleOuraSync = async () => {
+        setIsOuraLoading(true);
+        try {
+            // Sync data from Oura using axios (which has CSRF configured)
+            const syncRes = await axios.post('/api/oura/sync');
+
+            if (syncRes.status === 200) {
+                // Fetch the latest data
+                const [dataRes, insightsRes] = await Promise.all([
+                    axios.get('/api/oura/latest'),
+                    axios.get('/api/oura/insights'),
+                ]);
+
+                setLocalOuraData(dataRes.data);
+                setLocalOuraInsights(insightsRes.data);
+            }
+        } catch (error: any) {
+            console.error('Failed to sync Oura data:', error?.response?.data || error);
+        } finally {
+            setIsOuraLoading(false);
+        }
     };
 
     const isCompleted = (task: Task) => task.completed_at !== null;
@@ -93,6 +149,14 @@ export default function Dashboard({ auth, goals, tasks, contacts }: DashboardPro
                         </div>
                     </div>
                 </div>
+
+                {/* Oura Recovery Widget */}
+                <OuraWidget
+                    data={localOuraData}
+                    insights={localOuraInsights}
+                    onSync={handleOuraSync}
+                    isLoading={isOuraLoading}
+                />
 
                 {/* Main Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
