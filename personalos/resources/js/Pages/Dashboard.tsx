@@ -59,23 +59,20 @@ export default function Dashboard({ auth, goals, tasks, contacts, ouraData, oura
         setIsOuraLoading(true);
         try {
             // Sync data from Oura using axios (which has CSRF configured)
-            const syncRes = await axios.post('/api/oura/sync');
+            await axios.post('/api/oura/sync');
 
-            if (syncRes.status === 200) {
-                // Fetch the latest data
-                const [dataRes, insightsRes] = await Promise.all([
-                    axios.get('/api/oura/latest'),
-                    axios.get('/api/oura/insights'),
-                ]);
+            // Fetch the latest data
+            const [dataRes, insightsRes] = await Promise.all([
+                axios.get('/api/oura/latest'),
+                axios.get('/api/oura/insights'),
+            ]);
 
-                setLocalOuraData(dataRes.data);
-                setLocalOuraInsights(insightsRes.data);
-            }
+            setLocalOuraData(dataRes.data);
+            setLocalOuraInsights(insightsRes.data);
         } catch (error: any) {
             console.error('Failed to sync Oura data:', error?.response?.data || error);
-        } finally {
-            setIsOuraLoading(false);
         }
+        setIsOuraLoading(false);
     };
 
     const isCompleted = (task: Task) => task.completed_at !== null;
