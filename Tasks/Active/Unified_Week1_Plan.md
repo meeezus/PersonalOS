@@ -1,149 +1,46 @@
-# Unified Week 1 Plan (Dec 30 - Jan 10, 2025)
-**DUAL MISSION:** Launch Musha Shugyo content system (Dec 30-Jan 5) + Execute 90 DecoponATX emails (Jan 6-10)
-**NOTE:** Mom in town Dec 30-Jan 5 - Focus on Musha Shugyo content + family time, delay Decopon outreach until Jan 6
+# Unified Week 1 Plan (Dec 29 - Jan 10, 2025)
+**UPDATED:** Dec 29, 2025 to reflect actual reality
+**PRIMARY MISSION:** Family time + command center build (Dec 30-Jan 5) → DecoponATX email challenge (Jan 6-10)
 
 ---
 
-## SETUP WEEKEND (Dec 27-29)
+## SUNDAY DEC 29 - HEALTH DAY ✓
 
-### Saturday Dec 28 - Musha Shugyo Foundation (2 hours)
-**9:00-11:00am Block:**
-- [ ] Create Substack account 'Musha Shugyo'
-- [ ] Write Substack About page (target: men 20-50, white belt BJJ journey)
-- [ ] Design simple banner/branding (Canva)
-- [ ] Write welcome email for new subscribers
-- [ ] Update X bio to martial arts focus + Substack link
+### Morning - Dr. Pharm Appointment
+- [x] 8:30 AM appointment at Texas Orthopedics, Bee Cave
+- [x] Discussed nerve damage recovery
+- [x] MRI scheduled: Jan 19, 2025 (exploring earlier options)
 
-**Suggested X Bio:**
-```
-White belt documenting the journey 🥋
-BJJ at Six Blades | Lake Travis
-Musha Shugyo: The path of martial mastery
-Weekly newsletter ↓
-[Substack link]
-```
-
-### Sunday Dec 29 - Systems Setup (2 hours)
-**2:00-4:00pm Block:**
-- [ ] Set up SuperX posting queue (3 tweets/day, auto-optimize)
-- [ ] Create pinned tweet introducing Musha Shugyo + newsletter link
-- [ ] Follow 30 BJJ/martial arts accounts on X
-- [ ] Create note folders: Tweet Ideas, Newsletter Drafts, Training Observations
-- [ ] Download 5-7 BJJ/martial arts podcasts for morning walks
-- [ ] Identify 15 accounts to engage with daily (save list)
-- [ ] **WEEK 1 PLANNING**: Choose first topic (suggestion: "Day 1 of White Belt Journey")
-- [ ] Brainstorm 15 tweet ideas for Week 1
+### Rest of Day
+- Light recovery mode
+- No pressure
 
 ---
 
-## MONDAY DEC 30 - MUSHA SHUGYO LAUNCH DAY
+## DEC 30 - JAN 5: FAMILY TIME + COMMAND CENTER BUILD
 
-### 7:00-8:30am - MUSHA SHUGYO MORNING BLOCK
-- [ ] **7:00-7:30am**: Walk + BJJ podcast + voice memo ideas
-- [ ] **7:30-8:00am**: Write 3 tweets (use Day 1 white belt angle)
-- [ ] **8:00-8:30am**: Schedule in SuperX + engage 10-15 replies
+**Reality Check:**
+- Mom in town = FAMILY PRIORITY
+- No tweeting, no content pressure
+- Light vibe coding during downtime (movies, chill time)
 
-### 12:00-1:00pm - BJJ TRAINING (Six Blades)
-- [ ] **Capture content ideas during/after training**
+### Command Center Build (When Energy Allows)
+**Project:** Build robust PersonalOS command center
+- Work during family downtime (movie time, etc.)
+- No deadlines, just exploration
+- Focus: Make the system work better for you
 
-### 8:00-8:15pm - MUSHA SHUGYO EVENING
-- [ ] Reply to X comments/DMs (15 min)
+**Vibe:** Low pressure, high curiosity
 
-**END OF DAY CHECKLIST:**
-- [ ] Musha Shugyo: 3 tweets posted, 10-15 engagements done
-- [ ] Voice memos captured from training
-- [ ] Quality time with mom
+### Health Recovery
+- MRI: Jan 19 (try to get earlier if possible)
+- Listen to body
+- Don't push through pain
 
----
-
-## TUESDAY DEC 31
-
-### 7:00-8:30am - MUSHA SHUGYO MORNING BLOCK
-- [ ] **7:00-7:30am**: Walk + podcast + voice memo ideas
-- [ ] **7:30-8:00am**: Write 3 tweets (BJJ training observations from Monday)
-- [ ] **8:00-8:30am**: Schedule + engage
-
-### 8:00-8:15pm - MUSHA SHUGYO EVENING
-- [ ] Reply to X comments/DMs
-
-**END OF DAY CHECKLIST:**
-- [ ] Musha Shugyo: 3 tweets posted
-- [ ] Quality time with mom
-
----
-
-## WEDNESDAY JAN 1
-
-### 7:00-8:30am - MUSHA SHUGYO MORNING BLOCK
-- [ ] **7:00-7:30am**: Walk + podcast + voice memo ideas
-- [ ] **7:30-8:00am**: Write 3 tweets
-- [ ] **8:00-8:30am**: Schedule + engage
-- [ ] **BONUS**: Mid-week analytics check (what's working?)
-
-### 12:00-1:00pm - BJJ TRAINING (Six Blades)
-- [ ] Capture content ideas
-
-### 8:00-8:15pm - MUSHA SHUGYO EVENING
-- [ ] Reply to X comments/DMs
-
-**END OF DAY CHECKLIST:**
-- [ ] Musha Shugyo: 3 tweets posted
-- [ ] Quality time with mom
-
----
-
-## THURSDAY JAN 2
-
-### 7:00-8:30am - MUSHA SHUGYO MORNING BLOCK
-- [ ] **7:00-7:30am**: Walk + podcast + voice memo ideas
-- [ ] **7:30-8:00am**: Write 3 tweets
-- [ ] **8:00-8:30am**: Schedule + engage
-
-### 7:00-9:00pm - MUSHA SHUGYO: NEWSLETTER DRAFT
-- [ ] **OPTIONAL**: Start first newsletter draft if energy allows
-- [ ] Topic suggestion: "Musha Shugyo: Why I'm Documenting This Journey"
-- [ ] Can defer to Week 2 if too much
-
-### 8:00-8:15pm (or after newsletter) - MUSHA SHUGYO EVENING
-- [ ] Reply to X comments/DMs
-
-**END OF DAY CHECKLIST:**
-- [ ] Musha Shugyo: 3 tweets posted
-- [ ] Newsletter draft started (optional)
-- [ ] Quality time with mom
-
----
-
-## FRIDAY JAN 3
-
-### 7:00-8:30am - MUSHA SHUGYO MORNING BLOCK
-- [ ] **SKIP NEWSLETTER PUBLISHING** (defer to next Friday)
-- [ ] **7:00-7:30am**: Walk + podcast + voice memo ideas
-- [ ] **7:30-8:00am**: Write 3 tweets
-- [ ] **8:00-8:30am**: Schedule + engage
-
-### 7:00-7:30pm - MUSHA SHUGYO: WEEK 1 REVIEW
-- [ ] Review SuperX analytics: Best tweets? Best topics?
-- [ ] Total followers gained this week?
-- [ ] What tweet structures worked best?
-- [ ] Plan Week 2 content topic
-
-### 8:00-8:15pm - MUSHA SHUGYO EVENING
-- [ ] Reply to X comments/DMs
-
-**END OF DAY CHECKLIST:**
-- [ ] Musha Shugyo: 3 tweets posted, engagement established
-- [ ] Newsletter deferred to Week 2 (smart move!)
-- [ ] Quality time with mom
-
----
-
-## SATURDAY JAN 4 & SUNDAY JAN 5
-
-**Focus:** Quality time with mom + light Musha Shugyo maintenance
-- [ ] Continue 3 tweets/day if energy allows
-- [ ] Light X engagement (15 min/day)
-- [ ] Enjoy time with family
+**END OF WEEK GOAL:**
+- Quality family time ✓
+- Some progress on command center (whatever happens, happens)
+- Body recovering well
 
 ---
 
@@ -325,26 +222,31 @@ Weekly newsletter ↓
 | Discovery calls booked | 1-3 | ____ |
 | Events closed | 0-1 | ____ |
 
-### Musha Shugyo Metrics
+### Command Center Metrics (Dec 30 - Jan 5)
 | Metric | Target | Actual |
 |--------|--------|--------|
-| Tweets posted | 15 (3/day) | ____ |
-| X followers | 500→550+ | ____ |
-| Engagement replies sent | 50-75 | ____ |
-| Newsletter published | 0 (Week 2) | ____ |
+| Family time quality | High | ____ |
+| Command center progress | Whatever flows | ____ |
+| Body recovery | Good | ____ |
+| MRI scheduled | Jan 19 (earlier if possible) | Jan 19 |
 
 ---
 
-## TIME ALLOCATION (DAILY)
+## TIME ALLOCATION
 
-**Morning (7:00-8:30am)**: Musha Shugyo content (1.5 hrs)
-**Day (9:00am-5:00pm)**: DecoponATX work (varies by day)
-**Noon Mon/Wed**: BJJ training (1 hr)
-**Evening (8:00-8:15pm)**: Musha Shugyo engagement (15 min)
+**Dec 30 - Jan 5 (Family Week):**
+- Family time: Priority #1
+- Command center coding: Whenever it feels right (downtime only)
+- No structured blocks, no timers, no pressure
 
-**TOTAL DAILY COMMITMENT:**
+**Jan 6-10 (DecoponATX Week):**
+- Morning (7:00-9:00am): Email prep work
+- Day (9:00am-5:00pm): Email outreach (15-20/day)
+- Noon Mon/Wed: BJJ training (1 hr) - capture ideas
+- Evening: Light follow-up/tracking
+
+**TOTAL DAILY COMMITMENT (DecoponATX Week):**
 - DecoponATX: 6-8 hours/day
-- Musha Shugyo: 1h 45min/day
 - BJJ: 1 hour (Mon/Wed)
 
 ---
@@ -364,34 +266,40 @@ Weekly newsletter ↓
 - Research "better" tools
 - Plan Week 3 before finishing Week 1
 
-### Musha Shugyo (From Strategy)
+### Command Center Build (Dec 30 - Jan 5)
 ✅ **DO:**
-- 3 tweets every day (consistency > perfection)
-- Capture training observations via voice memo
-- Engage meaningfully (add value to replies)
-- Document white belt journey authentically
+- Code when energy flows during downtime
+- Experiment with PersonalOS improvements
+- Keep it light and fun
+- Prioritize family time
 
 ❌ **DON'T:**
-- Skip morning content block
-- Post without engaging after
-- Write about topics outside martial arts
-- Stress about newsletter this week
+- Set deadlines or time blocks
+- Feel guilty about not coding
+- Skip family moments for "progress"
+- Push through if body needs rest
+
+### Musha Shugyo (Deferred to Later)
+- Content strategy on hold during mom visit
+- Will resume after Jan 6 or when it feels right
+- No pressure to tweet or post
 
 ---
 
 ## IF YOU GET STUCK
 
 **DecoponATX stuck?** See troubleshooting in Action Plan
-**Musha Shugyo stuck?** Use tweet templates in Quick Reference
-**Both overwhelming?** Open chat and ask: "What's the plan today?"
+**Command center stuck?** Just vibe, no pressure
+**Feeling overwhelmed?** Open chat and ask: "What's the plan today?"
 
 ---
 
-## WEEK 2 PREVIEW (Jan 6-10)
+## WEEK 2+ PREVIEW
 
-**DecoponATX:** Continue momentum based on Week 1 learnings
-**Musha Shugyo:** Add newsletter publishing (draft Thu, publish Fri)
-**Goal:** Establish sustainable rhythm for both systems
+**DecoponATX:** Continue momentum based on Week 1 learnings (Jan 13-17?)
+**Musha Shugyo:** Will resume when it feels right (no forced timeline)
+**Command Center:** Keep iterating as energy allows
+**Goal:** Sustainable execution, not heroic sprints
 
 ---
 
