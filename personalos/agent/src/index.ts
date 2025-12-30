@@ -3,6 +3,7 @@ dotenv.config({ override: true });
 
 import scheduler from './scheduler';
 import { morningOverview } from './jobs/morning-overview';
+import { startDiscordBot } from './discord/bot';
 import { logger } from './utils/logger';
 
 console.log(`
@@ -48,6 +49,11 @@ if (process.argv.includes('--test')) {
   scheduler.start();
   logger.info('✅ Scheduler started');
   logger.info('📅 Scheduled jobs:', scheduler.config.jobs.map(j => j.name));
+
+  // Start Discord bot (if token configured)
+  startDiscordBot().catch(err => {
+    logger.warn('Discord bot not started:', err.message);
+  });
 
   // Handle graceful shutdown
   process.on('SIGINT', async () => {
