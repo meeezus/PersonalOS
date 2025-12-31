@@ -1,6 +1,5 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout';
 import GoalWidget from '@/Components/GoalWidget';
 import OuraWidget from '@/Components/OuraWidget';
@@ -57,14 +56,16 @@ export default function Dashboard({ auth, goals, tasks, contacts, ouraData, oura
 
     const handleOuraSync = async () => {
         setIsOuraLoading(true);
+        const minLoadTime = new Promise(resolve => setTimeout(resolve, 1000));
+
         try {
-            // Sync data from Oura using axios (which has CSRF configured)
-            await axios.post('/api/oura/sync');
+            // Sync data from Oura using window.axios (which has CSRF configured)
+            await window.axios.post('/api/oura/sync');
 
             // Fetch the latest data
             const [dataRes, insightsRes] = await Promise.all([
-                axios.get('/api/oura/latest'),
-                axios.get('/api/oura/insights'),
+                window.axios.get('/api/oura/latest'),
+                window.axios.get('/api/oura/insights'),
             ]);
 
             setLocalOuraData(dataRes.data);
@@ -72,6 +73,8 @@ export default function Dashboard({ auth, goals, tasks, contacts, ouraData, oura
         } catch (error: any) {
             console.error('Failed to sync Oura data:', error?.response?.data || error);
         }
+
+        await minLoadTime;
         setIsOuraLoading(false);
     };
 

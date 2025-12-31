@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ApiUsageController;
 use App\Http\Controllers\Api\OuraController;
+use App\Http\Controllers\Api\ChatController;
 
 // Public route to get current user
 Route::get('/user', function (Request $request) {
@@ -34,4 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('oura/range', [OuraController::class, 'range']);
     Route::get('oura/insights', [OuraController::class, 'insights']);
     Route::post('oura/sync', [OuraController::class, 'sync']);
+
+    // Chat (Jotaro)
+    Route::get('chat/messages', [ChatController::class, 'index']);
+    Route::post('chat/send', [ChatController::class, 'send']);
+    Route::delete('chat/clear', [ChatController::class, 'clear']);
+    Route::get('chat/sessions', [ChatController::class, 'sessions']);
 });

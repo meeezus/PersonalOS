@@ -35,6 +35,25 @@ export interface Contact {
     notes?: string;
 }
 
+export interface ChatMessage {
+    id: number;
+    role: 'user' | 'assistant';
+    content: string;
+    metadata?: {
+        actions?: Array<{
+            type: string;
+            data: Record<string, any>;
+        }>;
+        action_results?: Array<{
+            type: string;
+            success: boolean;
+            [key: string]: any;
+        }>;
+        error?: string;
+    };
+    created_at: string;
+}
+
 export interface PageProps {
     auth: {
         user: User;
@@ -43,4 +62,11 @@ export interface PageProps {
         message?: string;
         error?: string;
     };
+}
+
+// Extend Window interface for axios
+declare global {
+    interface Window {
+        axios: import('axios').AxiosInstance;
+    }
 }
