@@ -4,7 +4,7 @@ dotenv.config({ override: true });
 import scheduler from './scheduler';
 import { morningOverview } from './jobs/morning-overview';
 import { startDiscordBot } from './discord/bot';
-import { startJotaroServer } from './jotaro/server';
+import { startIoriServer } from './iori/server';
 import { logger } from './utils/logger';
 
 console.log(`
@@ -56,9 +56,9 @@ if (process.argv.includes('--test')) {
     logger.warn('Discord bot not started:', err.message);
   });
 
-  // Start Jotaro chat server
-  startJotaroServer();
-  logger.info('🏯 Jotaro chat server started on port 3002');
+  // Start Iori chat server
+  startIoriServer();
+  logger.info('🏯 Iori chat server started on port 3002');
 
   // Handle graceful shutdown
   process.on('SIGINT', async () => {

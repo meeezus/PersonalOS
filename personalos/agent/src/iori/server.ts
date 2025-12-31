@@ -19,7 +19,7 @@ app.use(express.json());
 app.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok',
-    service: 'jotaro',
+    service: 'iori',
     timestamp: new Date().toISOString(),
   });
 });
@@ -36,7 +36,7 @@ app.post('/chat', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    console.log(`[jotaro] Received message: "${message.substring(0, 50)}..."`);
+    console.log(`[iori] Received message: "${message.substring(0, 50)}..."`);
 
     const result = await chat({
       message,
@@ -49,11 +49,11 @@ app.post('/chat', async (req: Request, res: Response) => {
       },
     });
 
-    console.log(`[jotaro] Response generated (${result.response.length} chars, ${result.actions.length} actions)`);
+    console.log(`[iori] Response generated (${result.response.length} chars, ${result.actions.length} actions)`);
 
     return res.json(result);
   } catch (error) {
-    console.error('[jotaro] Error processing chat:', error);
+    console.error('[iori] Error processing chat:', error);
     return res.status(500).json({
       error: 'Failed to process chat request',
       details: error instanceof Error ? error.message : 'Unknown error',
@@ -65,17 +65,20 @@ app.post('/chat', async (req: Request, res: Response) => {
 // START SERVER
 // ============================================
 
-export function startJotaroServer(): void {
+export function startIoriServer(): void {
   app.listen(PORT, () => {
-    console.log(`\n🏯 Jotaro server running on http://localhost:${PORT}`);
+    console.log(`\n🏯 Iori server running on http://localhost:${PORT}`);
     console.log(`   POST /chat - Send a message`);
     console.log(`   GET /health - Health check\n`);
   });
 }
 
+// Keep old name for backwards compatibility
+export const startJotaroServer = startIoriServer;
+
 // Run if executed directly
 if (require.main === module) {
-  startJotaroServer();
+  startIoriServer();
 }
 
 export default app;

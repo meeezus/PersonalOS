@@ -76,7 +76,7 @@ ${content}
 
 ---
 
-*Logged via Jotaro*
+*Logged via Iori*
 `;
 
     fs.writeFileSync(filePath, fullContent, 'utf-8');

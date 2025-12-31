@@ -166,7 +166,7 @@ export default function Chat({ auth }: ChatProps) {
                                 CHAT
                             </h2>
                             <p className="text-xs font-mono text-white/40">
-                                AI Assistant // Context-Aware
+                                Iori // Context-Aware Assistant
                             </p>
                         </div>
                     </div>
@@ -187,7 +187,7 @@ export default function Chat({ auth }: ChatProps) {
                                 <Bot size={32} className="text-white/20" />
                             </div>
                             <h3 className="text-lg font-display text-white/60 mb-2">
-                                Ready to assist
+                                Iori is ready
                             </h3>
                             <p className="text-sm text-white/30 max-w-md font-mono">
                                 I have full context of your goals, tasks, and PersonalOS memory.

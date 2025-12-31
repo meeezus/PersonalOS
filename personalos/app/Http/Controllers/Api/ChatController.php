@@ -33,7 +33,7 @@ class ChatController extends Controller
     }
 
     /**
-     * Send a message to Jotaro and get response
+     * Send a message to Iori and get response
      */
     public function send(Request $request): JsonResponse
     {
@@ -70,9 +70,9 @@ class ChatController extends Controller
         $contacts = $user->contacts()->orderBy('last_contact', 'desc')->limit(10)->get(['id', 'name', 'last_contact']);
 
         try {
-            // Call Jotaro agent
+            // Call Iori agent
             $response = Http::timeout(120)->post(
-                env('JOTARO_URL', 'http://localhost:3002') . '/chat',
+                env('IORI_URL', 'http://localhost:3002') . '/chat',
                 [
                     'message' => $validated['content'],
                     'history' => $history,
@@ -86,14 +86,14 @@ class ChatController extends Controller
             );
 
             if (!$response->successful()) {
-                throw new \Exception('Jotaro agent returned error: ' . $response->status());
+                throw new \Exception('Iori agent returned error: ' . $response->status());
             }
 
             $data = $response->json();
             $assistantContent = $data['response'] ?? 'I apologize, but I encountered an issue processing your request.';
             $actions = $data['actions'] ?? [];
 
-            // Execute any actions Jotaro requested
+            // Execute any actions Iori requested
             $actionResults = $this->executeActions($actions, $user);
 
             // Store assistant message
@@ -169,7 +169,7 @@ class ChatController extends Controller
     }
 
     /**
-     * Execute actions requested by Jotaro
+     * Execute actions requested by Iori
      */
     private function executeActions(array $actions, $user): array
     {
