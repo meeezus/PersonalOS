@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Sidebar from '@/Components/Sidebar';
+import ChatBubble from '@/Components/ChatBubble';
 
 interface AppLayoutProps extends PropsWithChildren {
     user: {
@@ -26,6 +27,9 @@ export default function AppLayout({ children, user }: AppLayoutProps) {
                     {children}
                 </main>
             </div>
+
+            {/* Floating Chat Bubble */}
+            <ChatBubble />
         </div>
     );
 }

@@ -8,8 +8,7 @@ import {
     Sword,
     BookOpen,
     Sparkles,
-    Settings,
-    MessageSquare
+    Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -82,17 +81,6 @@ export default function Sidebar({ user }: SidebarProps) {
                     );
                 })}
             </nav>
-
-            {/* Chat Button */}
-            <div className="px-3 mb-2">
-                <Link
-                    href="/chat"
-                    className="flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group hover:bg-white/5 hover:text-white border-l-2 border-transparent"
-                >
-                    <MessageSquare size={16} className="text-white/40 group-hover:text-white" />
-                    <span className="font-mono text-xs tracking-wide">CHAT</span>
-                </Link>
-            </div>
 
             {/* Bottom Admin/User */}
             <div className="p-4 border-t border-white/10 space-y-1">
