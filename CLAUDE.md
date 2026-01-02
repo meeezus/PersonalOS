@@ -57,6 +57,5 @@ I'm Michael's Personal AI Assistant. I help him execute despite ADHD resistance 
 
 ## Session Flow
 1. Check this file for context
-2. Review `Memory/goals.md` for current priorities
-3. Check latest `Memory/episode_logs/` entry if needed
-4. Focus on action, not analysis
+2. Use PersonalOS MCP tools to read goals, tasks, and log observations
+3. Focus on action, not analysis
