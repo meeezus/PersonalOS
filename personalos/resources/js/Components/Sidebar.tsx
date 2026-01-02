@@ -9,7 +9,6 @@ import {
     BookOpen,
     Sparkles,
     Settings,
-    MessageSquare,
     Beaker
 } from 'lucide-react';
 
@@ -84,19 +83,8 @@ export default function Sidebar({ user }: SidebarProps) {
                 })}
             </nav>
 
-            {/* Chat & AI Test Buttons */}
+            {/* AI Test Button */}
             <div className="px-3 mb-2 space-y-1">
-                <Link
-                    href="/chat"
-                    className={`flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group border-l-2 ${
-                        url === '/chat'
-                            ? 'bg-white/10 text-white border-emerald-500'
-                            : 'hover:bg-white/5 hover:text-white border-transparent'
-                    }`}
-                >
-                    <MessageSquare size={16} className={url === '/chat' ? 'text-emerald-500' : 'text-white/40 group-hover:text-white'} />
-                    <span className="font-mono text-xs tracking-wide">CHAT</span>
-                </Link>
                 <Link
                     href="/ai-test"
                     className={`flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group border-l-2 ${
