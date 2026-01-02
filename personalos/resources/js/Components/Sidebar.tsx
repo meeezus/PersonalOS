@@ -9,7 +9,8 @@ import {
     BookOpen,
     Sparkles,
     Settings,
-    MessageSquare
+    MessageSquare,
+    Beaker
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -83,14 +84,29 @@ export default function Sidebar({ user }: SidebarProps) {
                 })}
             </nav>
 
-            {/* Chat Button */}
-            <div className="px-3 mb-2">
+            {/* Chat & AI Test Buttons */}
+            <div className="px-3 mb-2 space-y-1">
                 <Link
                     href="/chat"
-                    className="flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group hover:bg-white/5 hover:text-white border-l-2 border-transparent"
+                    className={`flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group border-l-2 ${
+                        url === '/chat'
+                            ? 'bg-white/10 text-white border-emerald-500'
+                            : 'hover:bg-white/5 hover:text-white border-transparent'
+                    }`}
                 >
-                    <MessageSquare size={16} className="text-white/40 group-hover:text-white" />
+                    <MessageSquare size={16} className={url === '/chat' ? 'text-emerald-500' : 'text-white/40 group-hover:text-white'} />
                     <span className="font-mono text-xs tracking-wide">CHAT</span>
+                </Link>
+                <Link
+                    href="/ai-test"
+                    className={`flex items-center gap-3 px-3 py-3 rounded-[2px] transition-all duration-200 group border-l-2 ${
+                        url === '/ai-test'
+                            ? 'bg-white/10 text-white border-yellow-500'
+                            : 'hover:bg-white/5 hover:text-white border-transparent'
+                    }`}
+                >
+                    <Beaker size={16} className={url === '/ai-test' ? 'text-yellow-500' : 'text-white/40 group-hover:text-white'} />
+                    <span className="font-mono text-xs tracking-wide">AI TEST</span>
                 </Link>
             </div>
 
