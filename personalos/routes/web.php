@@ -26,4 +26,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/knowledge', fn() => Inertia::render('Placeholder', ['title' => 'Knowledge']))->name('knowledge');
     Route::get('/sparkfile', fn() => Inertia::render('Placeholder', ['title' => 'Sparkfile']))->name('sparkfile');
     Route::get('/chat', fn() => Inertia::render('Chat'))->name('chat');
+    Route::get('/ai-test', fn() => Inertia::render('AITest'))->name('ai-test');
 });

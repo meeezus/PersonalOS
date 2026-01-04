@@ -1,0 +1,18 @@
+#!/bin/bash
+# Auto-rebuild after git pull
+
+echo "🔄 Post-merge hook: Rebuilding frontend..."
+
+cd "$(git rev-parse --show-toplevel)/personalos"
+
+# Check if package.json changed
+if git diff HEAD@{1} --name-only | grep -q "package.json"; then
+    echo "📦 package.json changed, running npm install..."
+    npm install
+fi
+
+# Always rebuild after pull
+echo "🏗️  Building frontend assets..."
+npm run build
+
+echo "✅ Done! Refresh your browser."
